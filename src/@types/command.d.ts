@@ -1,0 +1,1 @@
+export type CommandType = {flags: string, description?: string | undefined, defaultValue?: string | boolean | string[] | undefined}
