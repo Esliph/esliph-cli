@@ -1,23 +1,25 @@
-import { Command } from "commander";
-import { CommandType } from "./@types/command.d";
-import * as ModuleCommand from "./commands/module";
+#!/usr/bin/env node
 
-const program = new Command();
+import { LiphCliFactory } from './core'
+import { ModuleCommand } from './commands/module/index'
+import { Console } from './util/console'
 
-const commands: { option: CommandType; execModule: () => void }[] = [
-  ModuleCommand,
-];
+const console = new Console({
+    context: 'LiphApplication',
+    config: {
+        pidName: 'Liph',
+        showPidCode: false
+    }
+})
 
-program.name("liph").description("").version("");
+function App() {
+    const liph = new LiphCliFactory([new ModuleCommand()])
 
-commands.forEach(
-  ({ option: { flags, defaultValue, description }, execModule }) => {
-    program.option(flags, description, defaultValue);
-  }
-);
+    liph.parse(process.argv)
+}
 
-program.parse(process.argv);
-
-const options = program.opts();
-
-if (options.module) console.log(options.module);
+try {
+    App()
+} catch (err: any) {
+    console.error(err)
+}
