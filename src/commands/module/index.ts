@@ -1,4 +1,4 @@
-import { Command } from '../../core/command'
+import { Command } from '../../core'
 
 export class ModuleCommand extends Command {
     constructor() {
