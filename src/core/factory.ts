@@ -1,8 +1,8 @@
-import { ObserverEvent } from '../util/observer'
 import { Command as CommandCli, ParseOptions } from 'commander'
-import { Console } from '../util/console'
-import { Command } from './command'
 import { ObserverEventLiphCli, LiphCliEvents } from '../@types/core'
+import { Command } from './command'
+import { Console } from '../util/console'
+import { ObserverEvent } from '../util/observer'
 
 export class LiphCliFactory {
     private cli: CommandCli
@@ -21,7 +21,7 @@ export class LiphCliFactory {
         this.cli = new CommandCli()
             .name('liph')
             .description('')
-            .version('1.0.0', '-v --version version')
+            .version('1.0.0', '-v, --version, version')
             .showHelpAfterError('add --help for more details')
             .showSuggestionAfterError(true)
             .configureOutput({

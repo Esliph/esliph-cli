@@ -6,7 +6,7 @@ export class ModuleCommand extends Command {
             command: {
                 nameAndArgs: 'module'
             },
-            alias: ['m'],
+            alias: [],
             options: [
                 {
                     flags: '-n, --name <type>',
@@ -18,6 +18,7 @@ export class ModuleCommand extends Command {
                 description: 'Help'
             },
             action: args => {
+                console.log(args)
                 console.log(`Exec command "${this.command.nameAndArgs}"`)
             }
         })
