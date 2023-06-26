@@ -5,9 +5,9 @@
     "main": "dist/index.js",
     "scripts": {
         "start:production": "dist/index.js",
-        "start:dev": "tsx watch src/index.ts",
-        "start:dev:one": "tsx src/index.ts",
-        "build": "npx tsup src"
+        "start:dev": "tsx src/index.ts",
+        "build:dev": "npx tsup src",
+        "build": "npx tsc"
     },
     "repository": {
         "type": "git",
