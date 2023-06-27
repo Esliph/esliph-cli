@@ -12,10 +12,8 @@ export class LiphCliFactory {
     constructor(commands: Command[] = []) {
         this.console = new Console({
             context: 'Core',
-            config: {
-                pidName: 'Liph',
-                showPidCode: false
-            }
+            pidName: 'Liph',
+            showPidCode: false
         })
         this.observer = ObserverEvent<LiphCliEvents>()
         this.cli = new CommandCli()

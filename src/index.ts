@@ -6,10 +6,8 @@ import { Console } from './util/console'
 
 const console = new Console({
     context: 'LiphApplication',
-    config: {
-        pidName: 'Liph',
-        showPidCode: false
-    }
+    pidName: 'Liph',
+    showPidCode: false
 })
 
 function App() {
