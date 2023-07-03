@@ -9,12 +9,8 @@ export class LiphCliFactory {
     private console: Console
     private observer: ObserverEventLiphCli
 
-    constructor(commands: Command[] = []) {
-        this.console = new Console({
-            context: 'Core',
-            pidName: 'Liph',
-            showPidCode: false
-        })
+    constructor({ commands = [], console }: { commands: Command[]; console?: Console }) {
+        this.console = console || new Console({ context: '[LiphFactory]', pidName: 'Liph', levels: true })
         this.observer = ObserverEvent<LiphCliEvents>()
         this.cli = new CommandCli()
             .name('liph')
@@ -23,7 +19,8 @@ export class LiphCliFactory {
             .showHelpAfterError('add --help for more details')
             .showSuggestionAfterError(true)
             .configureOutput({
-                writeOut: mess => this.console.log(mess)
+                writeOut: mess => this.console.log(mess),
+                outputError: mess => this.console.error(mess)
             })
 
         commands.map(command => this.registerCommand(command))
@@ -34,17 +31,6 @@ export class LiphCliFactory {
     }
 
     registerCommand(cmd: Command) {
-        const c = this.cli.command(cmd.command.nameAndArgs, cmd.command.opts)
-        cmd.summary && c.summary(cmd.summary)
-        cmd.alias && c.aliases(cmd.alias)
-        cmd.arguments && cmd.arguments.forEach(arg => c.argument(arg.flags, arg.description, arg.defaultValue))
-        cmd.options && cmd.options.forEach(_cm => c.option(_cm.flags, _cm.description, _cm.defaultValue))
-        cmd.hooks && cmd.hooks.forEach(hook => c.hook(hook.event, hook.listener))
-        c.action(args => cmd.exec(args))
-        cmd.help && c.helpOption(cmd.help.flags, cmd.help.description)
-
-        cmd.on('command/start', mess => this.console.log(mess, { messageSameLine: true }))
-        cmd.on('command/end', mess => this.console.log(mess, { messageSameLine: true }))
-        cmd.on('command/error', mess => this.console.error(mess))
+        cmd.initComponents(this.cli)
     }
 }

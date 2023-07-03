@@ -1,30 +1,27 @@
+import { Command as CommandCli } from 'commander'
 import { Command } from '../../core'
 
 export class ModuleCommand extends Command {
     constructor() {
         super({
-            command: {
-                nameAndArgs: 'module'
-            },
-            alias: [],
-            options: [
-                {
-                    flags: '-n, --name <type>',
-                    description: 'Name module'
-                }
-            ],
-            help: {
-                flags: '-h, --help, help',
-                description: 'Help'
-            },
+            name: 'Module',
             action: args => {
-                console.log(args)
-                console.log(`Exec command "${this.command.nameAndArgs}"`)
+                console.log(`Exec command "Module"`)
             }
         })
 
-        this.initComponent()
+        this.on('command/start', data => this.console.log(data))
+        this.on('command/end', data => this.console.log(data))
+        this.on('command/error', data => this.console.error(data))
     }
 
-    private initComponent() {}
+    initComponents(cli: CommandCli) {
+        cli.command('module')
+            .summary('')
+            .aliases([])
+            // .argument('')
+            .option('-n, --name <type>', 'Name module')
+            .action(args => this.exec(args))
+        // .helpOption('')
+    }
 }

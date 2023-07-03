@@ -1,28 +1,20 @@
+import { Command as CommandCli } from 'commander'
 import { ObserverEventModel, ObserverEvent } from '../util/observer'
 import { CommandType, LiphCliEvents } from '../@types/core'
+import { Console } from '../util/console'
 
 export class Command {
     action: CommandType['action']
-    command: CommandType['command']
-    summary: CommandType['summary']
-    hooks: CommandType['hooks']
-    alias: CommandType['alias']
-    arguments: CommandType['arguments']
-    options: CommandType['options']
-    help: CommandType['help']
+    protected console: Console
     protected observer: ObserverEventModel<LiphCliEvents>
 
-    constructor(args: CommandType) {
+    constructor(args: CommandType, console?: Console) {
+        this.console = console || new Console({ context: `[Command${args.name}]`, levels: true })
         this.observer = ObserverEvent<LiphCliEvents>()
-        this.command = args['command']
-        this.summary = args['summary']
-        this.hooks = args['hooks']
         this.action = args['action']
-        this.alias = args['alias']
-        this.arguments = args['arguments']
-        this.options = args['options']
-        this.help = args['help']
     }
+
+    initComponents(cli: CommandCli) {}
 
     exec(...args: any[]) {
         try {

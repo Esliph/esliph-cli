@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
+import { ModuleCommand } from './commands/module'
 import { LiphCliFactory } from './core'
-import { ModuleCommand } from './commands/module/index'
 import { Console } from './util/console'
 
 const console = new Console({
-    context: 'LiphApplication',
-    pidName: 'Liph',
-    showPidCode: false
+    context: '[LiphCliApplication]'
 })
 
 function App() {
-    const liph = new LiphCliFactory([new ModuleCommand()])
+    const liph = new LiphCliFactory({
+        commands: [new ModuleCommand()]
+    })
 
     liph.parse(process.argv)
 }
