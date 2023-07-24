@@ -4,7 +4,7 @@ import packageConfig from '@package.json'
 import { Command } from '@commands/command'
 
 export class LiphCoreCli {
-    static program: CommandCli = new CommandCli()
+    static readonly program: CommandCli = new CommandCli()
     private static commands: Command[] = []
 
     private constructor() {}
