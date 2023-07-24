@@ -1,23 +1,8 @@
-#!/usr/bin/env node
+import { ModuleCommand } from '@commands/module.command'
+import { LiphCoreCli } from '@core'
 
-import { ModuleCommand } from './commands/module'
-import { LiphCliFactory } from './core'
-import { Console } from './util/console'
-
-const console = new Console({
-    context: '[LiphCliApplication]'
-})
-
-function App() {
-    const liph = new LiphCliFactory({
-        commands: [new ModuleCommand()]
-    })
-
-    liph.parse(process.argv)
+async function bootstrap() {
+    await LiphCoreCli.factory([ModuleCommand])
 }
 
-try {
-    App()
-} catch (err: any) {
-    console.error(err)
-}
+bootstrap()
