@@ -10,6 +10,13 @@ export class LiphCoreCli {
     private constructor() {}
 
     static async factory(commands: (new () => Command)[]) {
+        this.programConfig()
+        this.initCommands(commands)
+        this.initArgs()
+        this.unknowCommand()
+    }
+
+    private static programConfig() {
         this.program
             .name('liph')
             .description(packageConfig.description)
@@ -22,33 +29,18 @@ export class LiphCoreCli {
                 writeOut: mess => console.log(mess),
                 outputError: mess => console.error(mess)
             })
-
-        this.initCommands(commands)
-        this.handleInvalidCommand()
-
-        // await this.program.parseAsync(process.argv)
-
-        this.initArgs()
     }
 
     private static initArgs() {
-        this.program.parseAsync(process.argv)
-
         if (!process.argv.slice(2).length) {
-            this.program.outputHelp()
+            return this.program.outputHelp()
         }
+
+        this.program.parseAsync(process.argv)
     }
 
     private static initCommands(commands: (new () => Command)[]) {
         commands.forEach(command => this.registerCommand(command))
-    }
-
-    private static handleInvalidCommand() {
-        this.program.on('command:*', () => {
-            console.error(`Invalid command: ${this.program.args.splice(1).join(' ')}`)
-            console.log(`See "--help" for a list of available commands.\n`)
-            process.exit(1)
-        })
     }
 
     private static registerCommand(commandInstance: new () => Command) {
@@ -58,4 +50,6 @@ export class LiphCoreCli {
 
         this.commands.push(command)
     }
+
+    private static unknowCommand() {}
 }

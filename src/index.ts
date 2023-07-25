@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { ModuleCommand } from '@commands/module.command'
 import { LiphCoreCli } from '@core'
 

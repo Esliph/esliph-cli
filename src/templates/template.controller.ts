@@ -1,21 +1,14 @@
 import { Result } from '@esliph/util-node'
 import Handlebars from 'handlebars'
 import fs from 'node:fs'
+import { TemplateConfig } from '@templates/template'
 
-type TemplateConfig = {
-    files: {
-        [fileName: string]: {
-            name?: string
-        }
-    }
-}
-
-export class TemplateControl {
+export class TemplateControl<Parameters = any> {
     constructor(public templateName: string) {}
 
-    execute(data: object) {
+    execute(data: Parameters) {
         try {
-            return TemplateControl.generateTemplates(this.templateName, data)
+            return this.generateTemplates(this.templateName, data)
         } catch (err: any) {
             if (err instanceof Result) {
                 return Result.failure<false>(err.getError(), err.getStatus())
@@ -28,7 +21,7 @@ export class TemplateControl {
         }
     }
 
-    static generateTemplates(name: string, data: object) {
+    generateTemplates(name: string, data: Parameters) {
         const filesDirTarget = this.getTemplateFiles(name)
         const configTemplate = this.getTemplateConfig(name)
 
@@ -37,31 +30,59 @@ export class TemplateControl {
         return Result.success(true)
     }
 
-    static writeTemplate(name: string, data: object, filesDirTarget: string[], configTemplate: TemplateConfig) {
+    writeTemplate(name: string, data: Parameters, filesDirTarget: string[], configTemplate: TemplateConfig) {
         const dirTemplate: { [x: string]: string } = {}
 
         filesDirTarget.forEach(firTemp => {
-            const fileContent = fs.readFileSync(this.getFullPathTemplateDirectoriesFile(name, firTemp), 'utf-8')
+            const validation = configTemplate.files[firTemp]?.validation
+            if (validation && !validation(data)) {
+                return
+            }
+
+            const fileContent = fs.readFileSync(this.getFullPathTemplateModelFile(name, firTemp), 'utf-8')
 
             dirTemplate[firTemp] = Handlebars.compile(fileContent)(data)
 
-            const newName = configTemplate.files[firTemp]?.name || dirTemplate[firTemp]
+            const basePath = process.cwd()
+            const nameConfig = configTemplate.files[firTemp]?.name
+            const nameTemplateConfig = configTemplate?.nameTemplate
+            const newName = typeof nameConfig == 'undefined' ? firTemp : typeof nameConfig == 'string' ? nameConfig : nameConfig(data)
+            const nameTemplate =
+                typeof nameTemplateConfig == 'undefined' ? name : typeof nameTemplateConfig == 'string' ? nameTemplateConfig : nameTemplateConfig(data)
+            const targetPath = 'examplos/' + nameTemplate + '/' + newName
 
-            fs.writeFileSync(process.cwd() + '/examplos/' + name + '/' + newName, dirTemplate[firTemp])
+            this.writePathFile(basePath, targetPath, dirTemplate[firTemp])
         })
     }
 
-    static getAllTemplates() {
+    writePathFile(base: string, target: string, context: string) {
+        const folders = target.split('/').slice(0, target.split('/').length - 1)
+
+        let currentFolder = base
+        folders.forEach(folder => {
+            currentFolder += `/${folder}`
+
+            try {
+                fs.accessSync(currentFolder, fs.constants.F_OK)
+            } catch (err) {
+                fs.mkdirSync(currentFolder)
+            }
+        })
+
+        fs.writeFileSync(base + '/' + target, context)
+    }
+
+    getAllTemplates() {
         const templates = fs.readdirSync(this.getFullPathBase())
 
         return Result.success(templates.filter(temp => temp != 'template.controller.ts'))
     }
 
-    static getTemplateConfig(name: string) {
+    getTemplateConfig(name: string) {
         try {
-            const configFile: TemplateConfig = JSON.parse(fs.readFileSync(this.getFullPathTemplateConfig(name), 'utf-8'))
+            const templateConfig = require(this.getFullPathTemplateConfig(name))
 
-            return Result.success<TemplateConfig>(configFile)
+            return Result.success<TemplateConfig>(templateConfig)
         } catch (err: any) {
             throw Result.failure<TemplateConfig>({
                 title: 'Get Config Tamplates',
@@ -70,11 +91,11 @@ export class TemplateControl {
         }
     }
 
-    static getTemplateFiles(name: string) {
+    getTemplateFiles(name: string) {
         try {
             const configFile = this.getTemplateConfig(name)
 
-            const filesDirTarget = Object.keys(configFile.getValue().files).map(([key]) => key)
+            const filesDirTarget = Object.keys(configFile.getValue().files).map(key => key)
 
             return Result.success<string[]>(filesDirTarget)
         } catch (err: any) {
@@ -85,23 +106,23 @@ export class TemplateControl {
         }
     }
 
-    static getFullPathBase() {
+    getFullPathBase() {
         return `${__dirname}`
     }
 
-    static getFullPathTemplate(name: string) {
+    getFullPathTemplate(name: string) {
         return `${this.getFullPathBase()}/${name}`
     }
 
-    static getFullPathTemplateDirectories(name: string) {
-        return `${this.getFullPathTemplate(name)}/directories`
+    getFullPathTemplateModel(name: string) {
+        return `${this.getFullPathTemplate(name)}/model`
     }
 
-    static getFullPathTemplateDirectoriesFile(name: string, fileName: string) {
-        return `${this.getFullPathTemplate(name)}/directories/${fileName}`
+    getFullPathTemplateModelFile(name: string, fileName: string) {
+        return `${this.getFullPathTemplate(name)}/model/${fileName}`
     }
 
-    static getFullPathTemplateConfig(name: string) {
-        return `${this.getFullPathTemplate(name)}/template.config.json`
+    getFullPathTemplateConfig(name: string) {
+        return `${this.getFullPathTemplate(name)}/template.config.ts`
     }
 }
