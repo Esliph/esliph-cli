@@ -1,0 +1,68 @@
+import { Injectable } from '@nestjs/common'
+import { HttpEsliph, Result } from '@esliph/util-node'
+import { z } from 'zod'
+import { ZodValidateService } from '@services/zod'
+import { {{ capitalise name }}FindManyRepositoryAbstract } from '@modules/{{ name }}/repository/find.repository'
+import { {{ capitalise name }}PropSelect } from '@modules/{{ name }}/repository/repository'
+import { ResultException } from '@util/exceptions/result.exception'
+
+export class {{ capitalise name }}ListUseCaseDTO {
+    /* Set the DTO properties to list "{{ capitalise name }}" */
+}
+
+export const {{ capitalise name }}ListUseCaseArgsSchema = z.object({
+    /* Set the filter properties to list "{{ capitalise name }}" */
+})
+
+const {{ capitalise name }}PropsSelected = {
+    /* Define the properties that must be brought in the "{{ capitalise name }}" listing */
+}
+
+export type {{ capitalise name }}ListUseCaseArgs = z.input<typeof {{ capitalise name }}ListUseCaseArgsSchema>
+export type {{ capitalise name }}ListUseCaseResponse = z.output<typeof {{ capitalise name }}ListUseCaseArgsSchema>
+export type {{ capitalise name }}ListCasePerformResponseValue = { {{ name }}s: {{ capitalise name }}PropSelect<{ select: typeof {{ capitalise name }}PropsSelected }>[] }
+export type {{ capitalise name }}ListCasePerformResponse = Promise<Result<{{ capitalise name }}ListCasePerformResponseValue>>
+
+@Injectable()
+export class {{ capitalise name }}ListUseCase {
+    constructor(private readonly list{{ capitalise name }}Repository: {{ capitalise name }}FindManyRepositoryAbstract) { }
+
+    async perform(listArgs: {{ capitalise name }}ListUseCaseArgs): {{ capitalise name }}ListCasePerformResponse {
+        try {
+            const responsePerform = await this.performList(listArgs)
+
+            return responsePerform
+        } catch (err: any) {
+            if (err instanceof ResultException) {
+                return err
+            }
+            return Result.failure({ title: 'Create {{ capitalise name }}', message: [{ message: 'Cannot create {{ name }}' }] }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+        }
+    }
+
+    private async performList(listArgs: {{ capitalise name }}ListUseCaseArgs): {{ capitalise name }}ListCasePerformResponse {
+        const listArgsValidationResult = this.validateArgsProps(listArgs)
+
+        const listArgsDTO = listArgsValidationResult.getValue()
+
+        const performListRepositoryResult = await this.performListRepository(listArgsDTO)
+
+        if (!performListRepositoryResult.isSuccess()) {
+            return Result.failure(performListRepositoryResult.getError(), performListRepositoryResult.getStatus())
+        }
+
+        return Result.success<{{ capitalise name }}ListCasePerformResponseValue>(performListRepositoryResult.getValue(), performListRepositoryResult.getStatus())
+    }
+
+    private validateArgsProps(listArgs: {{ capitalise name }}ListUseCaseArgs) {
+        const {{ name }}ListDTO = ZodValidateService.performParse(listArgs, {{ capitalise name }}ListUseCaseArgsSchema)
+
+        return {{ name }}ListDTO
+    }
+
+    private async performListRepository(listArgs: {{ capitalise name }}ListUseCaseArgs) {
+        const response = await this.list{{ capitalise name }}Repository.perform({ where: listArgs, select: {{ capitalise name }}PropsSelected })
+
+        return response
+    }
+}

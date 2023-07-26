@@ -22,7 +22,6 @@
     "homepage": "https://github.com/Esliph/esliph-cli#readme",
     "devDependencies": {
         "@salesforce/eslint-config-lwc": "^3.5.0",
-        "@types/handlebars": "^4.1.0",
         "@typescript-eslint/eslint-plugin": "^5.0.0",
         "@typescript-eslint/parser": "^5.0.0",
         "eslint": "^8.0.1",
@@ -39,9 +38,6 @@
         "@types/node": "^20.3.1",
         "commander": "^11.0.0",
         "handlebars": "^4.7.7",
-        "inquirer": "^9.2.8",
-        "inquirer-autocomplete-prompt": "^3.0.0",
-        "inquirer-press-to-continue": "^1.2.0",
-        "inquirer-search-checkbox": "^1.0.0"
+        "inquirer": "^9.2.8"
     }
 }

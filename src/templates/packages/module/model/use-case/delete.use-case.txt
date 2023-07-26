@@ -1,0 +1,61 @@
+import { Injectable } from '@nestjs/common'
+import { HttpEsliph, Result } from '@esliph/util-node'
+import { z } from 'zod'
+import { ZodValidateService } from '@services/zod'
+import { ResultException } from '@util/exceptions/result.exception'
+import { {{ capitalise name }}DeleteRepositoryAbstract } from '@modules/{{ name }}/repository/delete.repository'
+
+export class {{ capitalise name }}DeleteUseCaseDTO {
+    /* Set the DTO properties to delete "{{ capitalise name }}" */
+}
+
+export const {{ capitalise name }}DeleteUseCaseArgsSchema = ZodValidateService.defaultSchemaModelTable()
+
+export type {{ capitalise name }}DeleteUseCaseArgs = z.input<typeof {{ capitalise name }}DeleteUseCaseArgsSchema>
+export type {{ capitalise name }}DeleteUseCaseResponse = z.output<typeof {{ capitalise name }}DeleteUseCaseArgsSchema>
+export type {{ capitalise name }}DeleteUseCasePerformResponseValue = boolean
+export type {{ capitalise name }}DeleteUseCasePerformResponse = Promise<Result<{{ capitalise name }}DeleteUseCasePerformResponseValue>>
+
+@Injectable()
+export class {{ capitalise name }}DeleteUseCase {
+    constructor(private readonly delete{{ capitalise name }}Repository: {{ capitalise name }}DeleteRepositoryAbstract) { }
+
+    async perform(deleteArgs: {{ capitalise name }}DeleteUseCaseArgs): {{ capitalise name }}DeleteUseCasePerformResponse {
+        try {
+            const responsePerform = await this.performDelete(deleteArgs)
+
+            return responsePerform
+        } catch (err: any) {
+            if (err instanceof ResultException) {
+                return err
+            }
+            return Result.failure({ title: 'Delete {{ capitalise name }}', message: [{ message: 'Cannot delete {{ name }}' }] }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+        }
+    }
+
+    private async performDelete(deleteArgs: {{ capitalise name }}DeleteUseCaseArgs): {{ capitalise name }}DeleteUseCasePerformResponse {
+        const deleteArgsValidationResult = this.validateArgsProps(deleteArgs)
+
+        const deleteArgsDTO = deleteArgsValidationResult.getValue()
+
+        const performDelete{{ capitalise name }}RepositoryResult = await this.performDelete{{ capitalise name }}Repository(deleteArgsDTO)
+
+        if (!performDelete{{ capitalise name }}RepositoryResult.isSuccess()) {
+            return Result.failure(performDelete{{ capitalise name }}RepositoryResult.getError(), performDelete{{ capitalise name }}RepositoryResult.getStatus())
+        }
+
+        return performDelete{{ capitalise name }}RepositoryResult
+    }
+
+    private validateArgsProps(deleteArgs: {{ capitalise name }}DeleteUseCaseArgs) {
+        const {{ name }}ListDTO = ZodValidateService.performParse(deleteArgs, {{ capitalise name }}DeleteUseCaseArgsSchema)
+
+        return {{ name }}ListDTO
+    }
+
+    private async performDelete{{ capitalise name }}Repository(deleteArgs: {{ capitalise name }}DeleteUseCaseResponse) {
+        const response = await this.delete{{ capitalise name }}Repository.perform({ where: { id: deleteArgs.id } })
+
+        return response
+    }
+}

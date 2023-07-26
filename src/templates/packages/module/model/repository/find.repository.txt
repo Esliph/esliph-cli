@@ -1,0 +1,107 @@
+import { Injectable } from '@nestjs/common'
+import { Result } from '@esliph/util-node'
+import {
+    {{ capitalise name }}ModelTableRepositoryAbstract,
+    {{ capitalise name }}FindFirstArgs,
+    {{ capitalise name }}FindFirstResponse,
+    {{ capitalise name }}FindManyArgs,
+    {{ capitalise name }}FindManyResponse,
+    {{ capitalise name }}FindFirstOrThrowArgs,
+    {{ capitalise name }}FindFirstOrThrowResponse,
+    {{ capitalise name }}FindUniqueOrThrowArgs,
+    {{ capitalise name }}FindUniqueOrThrowResponse,
+    {{ capitalise name }}FindUniqueArgs,
+    {{ capitalise name }}FindUniqueResponse,
+    {{ capitalise name }}ExistsArgs,
+    {{ capitalise name }}ExistsResponse
+} from '@modules/{{ name }}/repository/repository'
+
+export abstract class {{ capitalise name }}FindUniqueRepositoryAbstract {
+    perform: <Args extends {{ capitalise name }}FindUniqueArgs>(args: Args) => Promise<Result<{{ capitalise name }}FindUniqueResponse<Args>>>
+}
+
+@Injectable()
+export class {{ capitalise name }}FindUniqueRepository implements {{ capitalise name }}FindUniqueRepositoryAbstract {
+    constructor(private readonly repository: {{ capitalise name }}ModelTableRepositoryAbstract) {}
+
+    async perform<Args extends {{ capitalise name }}FindUniqueArgs>(args: Args): Promise<Result<{{ capitalise name }}FindUniqueResponse<Args>>> {
+        const response = await this.repository.findUnique(args)
+
+        return response
+    }
+}
+
+export abstract class {{ capitalise name }}FindExistsRepositoryAbstract {
+    perform: <Args extends {{ capitalise name }}ExistsArgs>(args: Args) => Promise<Result<{{ capitalise name }}ExistsResponse>>
+}
+
+@Injectable()
+export class {{ capitalise name }}FindExistsRepository implements {{ capitalise name }}FindExistsRepositoryAbstract {
+    constructor(private readonly repository: {{ capitalise name }}ModelTableRepositoryAbstract) {}
+
+    async perform<Args extends {{ capitalise name }}ExistsArgs>(args: Args): Promise<Result<{{ capitalise name }}ExistsResponse>> {
+        const response = await this.repository.findExists(args)
+
+        return response
+    }
+}
+
+export abstract class {{ capitalise name }}FindFirstRepositoryAbstract {
+    perform: <Args extends {{ capitalise name }}FindFirstArgs>(args: Args) => Promise<Result<{{ capitalise name }}FindFirstResponse<Args>>>
+}
+
+@Injectable()
+export class {{ capitalise name }}FindFirstRepository implements {{ capitalise name }}FindFirstRepositoryAbstract {
+    constructor(private readonly repository: {{ capitalise name }}ModelTableRepositoryAbstract) {}
+
+    async perform<Args extends {{ capitalise name }}FindFirstArgs>(args: Args): Promise<Result<{{ capitalise name }}FindFirstResponse<Args>>> {
+        const response = await this.repository.findFirst(args)
+
+        return response
+    }
+}
+
+export abstract class {{ capitalise name }}FindManyRepositoryAbstract {
+    perform: <Args extends {{ capitalise name }}FindManyArgs>(args: Args) => Promise<Result<{{ capitalise name }}FindManyResponse<Args>>>
+}
+
+@Injectable()
+export class {{ capitalise name }}FindManyRepository implements {{ capitalise name }}FindManyRepositoryAbstract {
+    constructor(private readonly repository: {{ capitalise name }}ModelTableRepositoryAbstract) {}
+
+    async perform<Args extends {{ capitalise name }}FindManyArgs>(args: Args): Promise<Result<{{ capitalise name }}FindManyResponse<Args>>> {
+        const response = await this.repository.findMany(args)
+
+        return response
+    }
+}
+
+export abstract class {{ capitalise name }}FindFirstOrThrowRepositoryAbstract {
+    perform: <Args extends {{ capitalise name }}FindFirstOrThrowArgs>(args: Args) => Promise<Result<{{ capitalise name }}FindFirstOrThrowResponse<Args>>>
+}
+
+@Injectable()
+export class {{ capitalise name }}FindFirstOrThrowRepository implements {{ capitalise name }}FindFirstOrThrowRepositoryAbstract {
+    constructor(private readonly repository: {{ capitalise name }}ModelTableRepositoryAbstract) {}
+
+    async perform<Args extends {{ capitalise name }}FindFirstOrThrowArgs>(args: Args): Promise<Result<{{ capitalise name }}FindFirstOrThrowResponse<Args>>> {
+        const response = await this.repository.findFirstOrThrow(args)
+
+        return response
+    }
+}
+
+export abstract class {{ capitalise name }}FindUniqueOrThrowRepositoryAbstract {
+    perform: <Args extends {{ capitalise name }}FindUniqueOrThrowArgs>(args: Args) => Promise<Result<{{ capitalise name }}FindUniqueOrThrowResponse<Args>>>
+}
+
+@Injectable()
+export class {{ capitalise name }}FindUniqueOrThrowRepository implements {{ capitalise name }}FindUniqueOrThrowRepositoryAbstract {
+    constructor(private readonly repository: {{ capitalise name }}ModelTableRepositoryAbstract) {}
+
+    async perform<Args extends {{ capitalise name }}FindUniqueOrThrowArgs>(args: Args): Promise<Result<{{ capitalise name }}FindUniqueOrThrowResponse<Args>>> {
+        const response = await this.repository.findUniqueOrThrow(args)
+
+        return response
+    }
+}

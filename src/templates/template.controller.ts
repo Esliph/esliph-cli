@@ -2,6 +2,19 @@ import { Result } from '@esliph/util-node'
 import Handlebars from 'handlebars'
 import fs from 'node:fs'
 import { TemplateConfig } from '@templates/template'
+import { capitaliseTransform } from '@templates/helpers/capitalise-transform'
+import { pluralTransform } from '@templates/helpers/plural-transform'
+import { console } from '@utils/console'
+
+Handlebars.registerHelper('capitalise', capitaliseTransform)
+Handlebars.registerHelper('plural', pluralTransform)
+Handlebars.registerHelper('capitaliseAndPlural', value => {
+    return capitaliseTransform(pluralTransform(value))
+})
+Handlebars.registerHelper('if', function (conditional, options) {
+    // @ts-expect-error
+    return conditional && options.fn(this)
+})
 
 export class TemplateControl<Parameters = any> {
     constructor(public templateName: string) {}
@@ -34,28 +47,32 @@ export class TemplateControl<Parameters = any> {
         const dirTemplate: { [x: string]: string } = {}
 
         filesDirTarget.forEach(firTemp => {
-            const validation = configTemplate.files[firTemp]?.validation
-            if (validation && !validation(data)) {
-                return
+            try {
+                const validation = configTemplate.files[firTemp]?.validation
+                if (validation && !validation(data)) {
+                    return
+                }
+
+                const fileContent = fs.readFileSync(this.getFullPathTemplateModelFile(name, firTemp), 'utf-8')
+
+                dirTemplate[firTemp] = Handlebars.compile(fileContent)(data)
+
+                const basePath = process.cwd()
+                const nameConfig = configTemplate.files[firTemp]?.name
+                const nameTemplateConfig = configTemplate?.nameTemplate
+                const newName = typeof nameConfig == 'undefined' ? firTemp : typeof nameConfig == 'string' ? nameConfig : nameConfig(data)
+                const nameTemplate =
+                    typeof nameTemplateConfig == 'undefined' ? name : typeof nameTemplateConfig == 'string' ? nameTemplateConfig : nameTemplateConfig(data)
+                const targetPath = 'examplos/' + nameTemplate + '/' + newName
+
+                this.writePathFile(basePath, targetPath, dirTemplate[firTemp])
+            } catch (err: any) {
+                console.log('!', err)
             }
-
-            const fileContent = fs.readFileSync(this.getFullPathTemplateModelFile(name, firTemp), 'utf-8')
-
-            dirTemplate[firTemp] = Handlebars.compile(fileContent)(data)
-
-            const basePath = process.cwd()
-            const nameConfig = configTemplate.files[firTemp]?.name
-            const nameTemplateConfig = configTemplate?.nameTemplate
-            const newName = typeof nameConfig == 'undefined' ? firTemp : typeof nameConfig == 'string' ? nameConfig : nameConfig(data)
-            const nameTemplate =
-                typeof nameTemplateConfig == 'undefined' ? name : typeof nameTemplateConfig == 'string' ? nameTemplateConfig : nameTemplateConfig(data)
-            const targetPath = 'examplos/' + nameTemplate + '/' + newName
-
-            this.writePathFile(basePath, targetPath, dirTemplate[firTemp])
         })
     }
 
-    writePathFile(base: string, target: string, context: string) {
+    writePathFile(base: string, target: string, content: string) {
         const folders = target.split('/').slice(0, target.split('/').length - 1)
 
         let currentFolder = base
@@ -69,7 +86,13 @@ export class TemplateControl<Parameters = any> {
             }
         })
 
-        fs.writeFileSync(base + '/' + target, context)
+        const pathFullTarget = base + '/' + target
+
+        console.log(pathFullTarget)
+
+        fs.writeFileSync(pathFullTarget, content)
+
+        console.log(`${console.colorizeText('CREATED', { color: 'green' })} ${pathFullTarget}`)
     }
 
     getAllTemplates() {
@@ -111,7 +134,7 @@ export class TemplateControl<Parameters = any> {
     }
 
     getFullPathTemplate(name: string) {
-        return `${this.getFullPathBase()}/${name}`
+        return `${this.getFullPathBase()}/packages/${name}`
     }
 
     getFullPathTemplateModel(name: string) {

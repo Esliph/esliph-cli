@@ -1,0 +1,253 @@
+import { Prisma } from '@prisma/client'
+import { Injectable } from '@nestjs/common'
+import { HttpEsliph, Result } from '@esliph/util-node'
+import { DatabaseService } from '@services/database'
+import { {{ capitalise name }}ModelTable } from '@modules/{{ name }}/schema'
+
+type {{ capitalise name }}GetPayloadTypes = boolean | null | undefined | { select?: Prisma.{{ capitalise name }}Select | null }
+type {{ capitalise name }}GetPayload<T extends boolean | null | undefined | { select?: Prisma.{{ capitalise name }}Select | null }> = Prisma.{{ capitalise name }}GetPayload<T>
+export type {{ capitalise name }}Args = Prisma.{{ capitalise name }}Args
+export type {{ capitalise name }}CreateArgs = Prisma.{{ capitalise name }}CreateArgs
+export type {{ capitalise name }}PropSelect<ArgsSelect extends {{ capitalise name }}GetPayloadTypes> = {{ capitalise name }}GetPayload<ArgsSelect>
+export type {{ capitalise name }}CreateResponse = { {{ name }}: {{ capitalise name }}ModelTable }
+export type {{ capitalise name }}CreateManyArgs = Prisma.{{ capitalise name }}CreateManyArgs
+export type {{ capitalise name }}CreateManyResponse = Prisma.BatchPayload
+export type {{ capitalise name }}DeleteArgs = Prisma.{{ capitalise name }}DeleteArgs
+export type {{ capitalise name }}DeleteResponse = boolean
+export type {{ capitalise name }}DeleteManyArgs = Prisma.{{ capitalise name }}DeleteManyArgs
+export type {{ capitalise name }}DeleteManyResponse = Prisma.BatchPayload
+export type {{ capitalise name }}UpdateArgs = Prisma.{{ capitalise name }}UpdateArgs
+export type {{ capitalise name }}UpdateResponse = { {{ name }}: {{ capitalise name }}ModelTable }
+export type {{ capitalise name }}UpdateManyArgs = Prisma.{{ capitalise name }}UpdateManyArgs
+export type {{ capitalise name }}UpdateManyResponse = Prisma.BatchPayload
+export type {{ capitalise name }}FindFirstArgs = Prisma.{{ capitalise name }}FindFirstArgs
+export type {{ capitalise name }}FindFirstResponse<ArgsSelect extends {{ capitalise name }}GetPayloadTypes> = { {{ name }}: {{ capitalise name }}PropSelect<ArgsSelect> }
+export type {{ capitalise name }}ExistsArgs = Prisma.{{ capitalise name }}FindFirstArgs
+export type {{ capitalise name }}ExistsResponse = boolean
+export type {{ capitalise name }}FindFirstOrThrowArgs = Prisma.{{ capitalise name }}FindFirstOrThrowArgs
+export type {{ capitalise name }}FindFirstOrThrowResponse<ArgsSelect extends {{ capitalise name }}GetPayloadTypes> = { {{ name }}: {{ capitalise name }}PropSelect<ArgsSelect> }
+export type {{ capitalise name }}FindUniqueArgs = Prisma.{{ capitalise name }}FindUniqueArgs
+export type {{ capitalise name }}FindUniqueResponse<ArgsSelect extends {{ capitalise name }}GetPayloadTypes> = { {{ name }}: {{ capitalise name }}PropSelect<ArgsSelect> }
+export type {{ capitalise name }}FindUniqueOrThrowArgs = Prisma.{{ capitalise name }}FindUniqueOrThrowArgs
+export type {{ capitalise name }}FindUniqueOrThrowResponse<ArgsSelect extends {{ capitalise name }}GetPayloadTypes> = { {{ name }}: {{ capitalise name }}PropSelect<ArgsSelect> }
+export type {{ capitalise name }}FindManyArgs = Prisma.{{ capitalise name }}FindManyArgs
+export type {{ capitalise name }}FindManyResponse<ArgsSelect extends {{ capitalise name }}GetPayloadTypes> = { {{ plural name }}: {{ capitalise name }}PropSelect<ArgsSelect>[] }
+export type {{ capitalise name }}UpsertArgs = Prisma.{{ capitalise name }}UpsertArgs
+export type {{ capitalise name }}UpsertResponse = { {{ name }}: {{ capitalise name }}ModelTable }
+
+export abstract class {{ capitalise name }}ModelTableRepositoryAbstract {
+    abstract create: <Args extends {{ capitalise name }}CreateArgs>(args: Args) => Promise<Result<{{ capitalise name }}CreateResponse>>
+    abstract createMany: <Args extends {{ capitalise name }}CreateManyArgs>(args: Args) => Promise<Result<{{ capitalise name }}CreateManyResponse>>
+    abstract update: <Args extends {{ capitalise name }}UpdateArgs>(args: Args) => Promise<Result<{{ capitalise name }}UpdateResponse>>
+    abstract updateMany: <Args extends {{ capitalise name }}UpdateManyArgs>(args: Args) => Promise<Result<{{ capitalise name }}CreateManyResponse>>
+    abstract findFirst: <Args extends {{ capitalise name }}FindFirstArgs>(args: Args) => Promise<Result<{{ capitalise name }}FindFirstResponse<Args>>>
+    abstract findExists: <Args extends {{ capitalise name }}ExistsArgs>(args: Args) => Promise<Result<{{ capitalise name }}ExistsResponse>>
+    abstract findUnique: <Args extends {{ capitalise name }}FindUniqueArgs>(args: Args) => Promise<Result<{{ capitalise name }}FindUniqueResponse<Args>>>
+    abstract findFirstOrThrow: <Args extends {{ capitalise name }}FindFirstOrThrowArgs>(args: Args) => Promise<Result<{{ capitalise name }}FindFirstOrThrowResponse<Args>>>
+    abstract findUniqueOrThrow: <Args extends {{ capitalise name }}FindUniqueOrThrowArgs>(args: Args) => Promise<Result<{{ capitalise name }}FindUniqueOrThrowResponse<Args>>>
+    abstract findMany: <Args extends {{ capitalise name }}FindManyArgs>(args: Args) => Promise<Result<{{ capitalise name }}FindManyResponse<Args>>>
+    abstract delete: <Args extends {{ capitalise name }}DeleteArgs>(args: Args) => Promise<Result<boolean>>
+    abstract deleteMany: <Args extends {{ capitalise name }}DeleteManyArgs>(args: Args) => Promise<Result<{{ capitalise name }}CreateManyResponse>>
+}
+
+@Injectable()
+export class {{ capitalise name }}ModelTableRepository implements {{ capitalise name }}ModelTableRepositoryAbstract {
+    constructor(private readonly repository: DatabaseService) { }
+
+    async create<Args extends {{ capitalise name }}CreateArgs>(args: Args) {
+        try {
+            const response: Result<{{ capitalise name }}CreateResponse> = await this.repository.{{ name }}
+                .create(args).then(res => Result.success({ {{ name }}: res }))
+
+            return response
+        } catch (err: any) {
+            return Result.failure<{{ capitalise name }}CreateResponse>({
+                title: 'Register {{ capitalise name }}',
+                message: [{ message: 'Cannot register {{ name }}', origin: err.meta.target.join(';') }]
+            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+        }
+    }
+
+    async createMany<Args extends {{ capitalise name }}CreateManyArgs>(args: Args) {
+        try {
+            const response: Result<{{ capitalise name }}CreateManyResponse> = await this.repository.{{ name }}
+                .createMany(args).then(res => Result.success(res))
+
+            return response
+        } catch (err: any) {
+            return Result.failure<{{ capitalise name }}CreateManyResponse>({
+                title: 'Register {{ capitaliseAndPlural name }}',
+                message: [{ message: 'Cannot register {{ plural name }}', origin: err.meta.target.join(';') }]
+            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+        }
+    }
+
+    async update<Args extends {{ capitalise name }}UpdateArgs>(args: Args) {
+        try {
+            const response: Result<{{ capitalise name }}UpdateResponse> = await this.repository.{{ name }}
+                .update(args).then(res => Result.success({ {{ name }}: res }))
+
+            return response
+        } catch (err: any) {
+            return Result.failure<{{ capitalise name }}UpdateResponse>({
+                title: 'Update {{ capitalise name }}',
+                message: [{ message: 'Cannot update {{ name }}', origin: err.meta.target.join(';') }]
+            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+        }
+    }
+
+    async updateMany<Args extends {{ capitalise name }}UpdateManyArgs>(args: Args) {
+        try {
+            const response: Result<{{ capitalise name }}UpdateManyResponse> = await this.repository.{{ name }}
+                .updateMany(args).then(res => Result.success(res))
+
+            return response
+        } catch (err: any) {
+            return Result.failure<{{ capitalise name }}UpdateManyResponse>({
+                title: 'Update {{ capitaliseAndPlural name }}',
+                message: [{ message: 'Cannot update {{ plural name }}', origin: err.meta.target.join(';') }]
+            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+        }
+    }
+
+    async findFirst<Args extends {{ capitalise name }}FindFirstArgs>(args: Args) {
+        try {
+            const response: Result<{{ capitalise name }}FindFirstResponse<Args>> = await this.repository.{{ name }}
+                .findFirst(args)
+                .then(res => {
+                    if (!res) {
+                        return Result.failure<{{ capitalise name }}FindFirstResponse<Args>>({
+                            title: 'Find {{ capitalise name }}',
+                            message: [{ message: '{{ capitalise name }} not found' }]
+                        }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+                    }
+                    return Result.success({ {{ name }}: res })
+                }) as Result<{{ capitalise name }}FindFirstResponse<Args>>
+
+            return response
+        } catch (err: any) {
+            return Result.failure<{{ capitalise name }}FindFirstResponse<Args>>({
+                title: 'Find {{ capitalise name }}',
+                message: [{ message: 'Cannot find {{ name }}', origin: err.meta.target.join(';') }]
+            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+        }
+    }
+
+    async findExists<Args extends {{ capitalise name }}ExistsArgs>(args: Args) {
+        try {
+            const response: Result<{{ capitalise name }}ExistsResponse> = await this.repository.{{ name }}
+                .findFirst(args)
+                .then(res => {
+                    if (!res) {
+                        return Result.failure<{{ capitalise name }}ExistsResponse>({
+                            title: '{{ capitalise name }} Exists',
+                            message: [{ message: '{{ capitalise name }} not found' }]
+                        }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+                    }
+                    return Result.success<{{ capitalise name }}ExistsResponse>(true)
+                })
+
+            return response
+        } catch (err: any) {
+            return Result.failure<{{ capitalise name }}ExistsResponse>({
+                title: 'Find {{ capitalise name }}',
+                message: [{ message: 'Cannot find {{ name }}', origin: err.meta.target.join(';') }]
+            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+        }
+    }
+
+    async findUnique<Args extends {{ capitalise name }}FindUniqueArgs>(args: Args) {
+        try {
+            const response: Result<{{ capitalise name }}FindUniqueResponse<Args>> = await this.repository.{{ name }}
+                .findFirst(args)
+                .then(res => {
+                    if (!res) {
+                        return Result.failure<{{ capitalise name }}FindUniqueResponse<Args>>({
+                            title: '{{ capitalise name }} {{ capitalise name }}',
+                            message: [{ message: '{{ capitalise name }} not found' }]
+                        }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+                    }
+                    return Result.success({ {{ name }}: res })
+                }) as Result<{{ capitalise name }}FindUniqueResponse<Args>>
+
+            return response
+        } catch (err: any) {
+            return Result.failure<{{ capitalise name }}FindUniqueResponse<Args>>({
+                title: 'Find {{ capitalise name }}',
+                message: [{ message: 'Cannot find {{ name }}', origin: err.meta.target.join(';') }]
+            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+        }
+    }
+
+    async findFirstOrThrow<Args extends {{ capitalise name }}FindFirstOrThrowArgs>(args: Args) {
+        try {
+            const response: Result<{{ capitalise name }}FindFirstOrThrowResponse<Args>> = await this.repository.{{ name }}
+                .findFirstOrThrow(args)
+                .then(res => Result.success({ {{ name }}: res })) as Result<{{ capitalise name }}FindFirstOrThrowResponse<Args>>
+
+            return response
+        } catch (err: any) {
+            return Result.failure<{{ capitalise name }}FindFirstOrThrowResponse<Args>>({
+                title: 'Find {{ capitalise name }}',
+                message: [{ message: 'Cannot find {{ name }}', origin: err.meta.target.join(';') }]
+            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+        }
+    }
+
+    async findUniqueOrThrow<Args extends {{ capitalise name }}FindUniqueOrThrowArgs>(args: Args) {
+        try {
+            const response: Result<{{ capitalise name }}FindUniqueOrThrowResponse<Args>> = await this.repository.{{ name }}
+                .findFirstOrThrow(args)
+                .then(res => Result.success({ {{ name }}: res })) as Result<{{ capitalise name }}FindUniqueOrThrowResponse<Args>>
+
+            return response
+        } catch (err: any) {
+            return Result.failure<{{ capitalise name }}FindUniqueOrThrowResponse<Args>>({
+                title: 'Find {{ capitalise name }}',
+                message: [{ message: 'Cannot find {{ name }}', origin: err.meta.target.join(';') }]
+            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+        }
+    }
+
+    async findMany<Args extends {{ capitalise name }}FindManyArgs>(args: Args) {
+        try {
+            const response: Result<{{ capitalise name }}FindManyResponse<Args>> = await this.repository.{{ name }}
+                .findMany(args).then(res => Result.success({ {{ plural name }}: res })) as Result<{{ capitalise name }}FindManyResponse<Args>>
+
+            return response
+        } catch (err: any) {
+            return Result.failure<{{ capitalise name }}FindManyResponse<Args>>({
+                title: 'Find {{ capitaliseAndPlural name }}',
+                message: [{ message: 'Cannot find {{ plural name }}', origin: err.meta.target.join(';') }]
+            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+        }
+    }
+
+    async delete<Args extends {{ capitalise name }}DeleteArgs>(args: Args) {
+        try {
+            const response: Result<{{ capitalise name }}DeleteResponse> = await this.repository.{{ name }}
+                .delete(args).then(res => Result.success(true))
+
+            return response
+        } catch (err: any) {
+            return Result.failure<{{ capitalise name }}DeleteResponse>({
+                title: 'Remove {{ capitalise name }}',
+                message: [{ message: 'Cannot remove {{ name }}', origin: err.meta.target.join(';') }]
+            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+        }
+    }
+
+    async deleteMany<Args extends {{ capitalise name }}DeleteManyArgs>(args: Args) {
+        try {
+            const response: Result<{{ capitalise name }}DeleteManyResponse> = await this.repository.{{ name }}
+                .deleteMany(args).then(res => Result.success(res))
+
+            return response
+        } catch (err: any) {
+            return Result.failure<{{ capitalise name }}DeleteManyResponse>({
+                title: 'Remove {{ capitaliseAndPlural name }}',
+                message: [{ message: 'Cannot remove {{ plural name }}', origin: err.meta.target.join(';') }]
+            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+        }
+    }
+}
