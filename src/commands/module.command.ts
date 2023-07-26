@@ -20,16 +20,16 @@ export class ModuleCommand extends Command {
             .summary('Generate module')
             .aliases(['m'])
             .option('-n, --name [type]', 'Name module')
-            .option('-nic, --not-include-crud', 'Not include CRUD generator', false)
+            .option('-nic, --not-include-crud', 'Not include CRUD generator')
             .option('-pn, --plural-name [type]', 'Plural name module')
-            .option('-ne, --no-entity', 'Module not references a entity model', false)
+            .option('-ne, --no-entity', 'Module not references a entity model')
             .action(async args => await this.action(args))
     }
 
     async action(args: any) {
         const dataArgs = {
             includeCrud: !args.notIncludeCrud,
-            isEnity: !args.noEntity,
+            isEnity: args.entity,
             name: args.name,
             pluralName: args.pluralName
         }
