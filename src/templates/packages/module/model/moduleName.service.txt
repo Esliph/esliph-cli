@@ -1,26 +1,21 @@
 import { Injectable } from '@nestjs/common'
-import { HttpEsliph, Result } from '@esliph/util-node'
-{{#if includeCrud && !isOperacional}}
+import { HttpEsliph, Result } from '@esliph/util-node'{{#if includeCrud}}{{#if isEnity}}
 import { {{ capitalise name }}CreateUseCase, {{ capitalise name }}CreateUseCaseArgs } from '@modules/{{ name }}/use-case/create.use-case'
 import { {{ capitalise name }}FindOneUseCase, {{ capitalise name }}FindOneUseCaseArgs } from '@modules/{{ name }}/use-case/find-one.use-case'
 import { {{ capitalise name }}ListUseCase, {{ capitalise name }}ListUseCaseArgs } from '@modules/{{ name }}/use-case/list.use-case'
 import { {{ capitalise name }}UpdateUseCase, {{ capitalise name }}UpdateUseCaseArgs } from '@modules/{{ name }}/use-case/update.use-case'
-import { {{ capitalise name }}DeleteUseCase, {{ capitalise name }}DeleteUseCaseArgs } from '@modules/{{ name }}/use-case/delete.use-case'
-{{/if}}
+import { {{ capitalise name }}DeleteUseCase, {{ capitalise name }}DeleteUseCaseArgs } from '@modules/{{ name }}/use-case/delete.use-case'{{/if}}{{/if}}
 
 @Injectable()
 export class {{ capitalise name }}Service {
-    constructor(
-        {{#if includeCrud && !isOperacional}}
+    constructor({{#if includeCrud}}{{#if isEnity}}
         private readonly createUC: {{ capitalise name }}CreateUseCase,
         private readonly listUC: {{ capitalise name }}ListUseCase,
         private readonly updateUC: {{ capitalise name }}UpdateUseCase,
         private readonly deleteUC: {{ capitalise name }}DeleteUseCase,
-        private readonly findUC: {{ capitalise name }}FindOneUseCase
-        {{/if}}
+        private readonly findUC: {{ capitalise name }}FindOneUseCase{{/if}}{{/if}}
     ) { }
-
-    {{#if includeCrud && !isOperacional}}
+{{#if includeCrud}}{{#if isEnity}}
     async get{{ capitaliseAndPlural name }}(body?: {{ capitalise name }}ListUseCaseArgs) {
         try {
             const response = await this.listUC.perform({ ...body })
@@ -84,6 +79,5 @@ export class {{ capitalise name }}Service {
                 HttpEsliph.HttpStatusCodes.INTERNAL_SERVER_ERROR
             )
         }
-    }
-    {{/if}}
+    }{{/if}}{{/if}}
 }

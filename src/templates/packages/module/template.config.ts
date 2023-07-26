@@ -1,19 +1,16 @@
 import { ModuleArgs } from '@commands/module.command'
 import { TemplateConfig } from '@templates/template'
-import Handlebars from 'handlebars'
 
 function IncludeCrud({ includeCrud }: ModuleArgs) {
     return includeCrud
 }
-function IsOperacional({ isOperacional }: ModuleArgs) {
-    return isOperacional
+function IsEntity({ isEnity }: ModuleArgs) {
+    return isEnity
 }
 
 function ValidateCrudGeneration(data: ModuleArgs) {
-    return IncludeCrud(data) && !IsOperacional(data)
+    return IncludeCrud(data) && IsEntity(data)
 }
-
-Handlebars.registerHelper('validCrud', ValidateCrudGeneration)
 
 const TEMPLATE_CONFIG: TemplateConfig<ModuleArgs> = {
     files: {
@@ -61,7 +58,7 @@ const TEMPLATE_CONFIG: TemplateConfig<ModuleArgs> = {
         },
         'repository/repository.txt': {
             name: 'repository/repository.ts',
-            validation: data => !IsOperacional(data)
+            validation: IsEntity
         },
         'repository/find.repository.txt': {
             name: 'repository/find.repository.ts',

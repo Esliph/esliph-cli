@@ -1,18 +1,15 @@
 import { Controller, Get, Post, Delete, Put, UseGuards } from '@nestjs/common'
 import { Body, Res, Param } from '@nestjs/common/decorators'
 import { Response } from '@@types/http'
-import { {{ capitalise name }}Service } from '@modules/{{ name }}/{{ name }}.service'
-{{#if includeCrud && !isOperacional}}
+import { {{ capitalise name }}Service } from '@modules/{{ name }}/{{ name }}.service'{{#if includeCrud}}{{#if isEnity}}
 import { {{ capitalise name }}UpdateUseCaseDTO } from '@modules/{{ name }}/use-case/update.use-case'
 import { {{ capitalise name }}DeleteUseCaseDTO } from '@modules/{{ name }}/use-case/delete.use-case'
-import { {{ capitalise name }}CreateUseCaseDTO } from '@modules/{{ name }}/use-case/create.use-case'
-{{/if}}
+import { {{ capitalise name }}CreateUseCaseDTO } from '@modules/{{ name }}/use-case/create.use-case'{{/if}}{{/if}}
 
 @Controller('/{{ plural name }}')
 export class {{ capitalise name }}Controller {
     constructor(private readonly {{ name }}Service: {{ capitalise name }}Service) { }
-
-    {{#if includeCrud && !isOperacional}}
+{{#if includeCrud}}{{#if isEnity}}
     @Get('/')
     async get{{ capitaliseAndPlural name }}(@Res() res: Response) {
         const response = await this.{{ name }}Service.get{{ capitaliseAndPlural name }}({})
@@ -46,6 +43,5 @@ export class {{ capitalise name }}Controller {
         const response = await this.{{ name }}Service.delete({ id, ...body })
 
         return res.status(response.getStatus()).send(response.getResponse())
-    }
-    {{/if}}
+    }{{/if}}{{/if}}
 }

@@ -6,18 +6,18 @@ import { capitaliseTransform } from '@templates/helpers/capitalise-transform'
 import { pluralTransform } from '@templates/helpers/plural-transform'
 import { console } from '@utils/console'
 
-Handlebars.registerHelper('capitalise', capitaliseTransform)
-Handlebars.registerHelper('plural', pluralTransform)
-Handlebars.registerHelper('capitaliseAndPlural', value => {
-    return capitaliseTransform(pluralTransform(value))
-})
-Handlebars.registerHelper('if', function (conditional, options) {
-    // @ts-expect-error
-    return conditional && options.fn(this)
-})
-
 export class TemplateControl<Parameters = any> {
-    constructor(public templateName: string) {}
+    constructor(public templateName: string, public handlebars = Handlebars.create()) {
+        this.globalHelpersInit()
+    }
+
+    private globalHelpersInit() {
+        this.handlebars.registerHelper('capitalise', capitaliseTransform)
+        this.handlebars.registerHelper('plural', pluralTransform)
+        this.handlebars.registerHelper('capitaliseAndPlural', value => {
+            return capitaliseTransform(pluralTransform(value))
+        })
+    }
 
     execute(data: Parameters) {
         try {
@@ -48,14 +48,18 @@ export class TemplateControl<Parameters = any> {
 
         filesDirTarget.forEach(firTemp => {
             try {
+                if (!configTemplate.files[firTemp]) {
+                    return
+                }
+
                 const validation = configTemplate.files[firTemp]?.validation
-                if (validation && !validation(data)) {
+                if ((typeof validation != 'undefined' && !validation(data)) || configTemplate.files[firTemp].inactive) {
                     return
                 }
 
                 const fileContent = fs.readFileSync(this.getFullPathTemplateModelFile(name, firTemp), 'utf-8')
 
-                dirTemplate[firTemp] = Handlebars.compile(fileContent)(data)
+                dirTemplate[firTemp] = this.handlebars.compile(fileContent, {})(data)
 
                 const basePath = process.cwd()
                 const nameConfig = configTemplate.files[firTemp]?.name
@@ -92,9 +96,9 @@ export class TemplateControl<Parameters = any> {
     }
 
     getAllTemplates() {
-        const templates = fs.readdirSync(this.getFullPathBase())
+        const templates = fs.readdirSync(this.getFullPathTemplates())
 
-        return Result.success(templates.filter(temp => temp != 'template.controller.ts'))
+        return Result.success(templates)
     }
 
     getTemplateConfig(name: string) {
@@ -129,8 +133,12 @@ export class TemplateControl<Parameters = any> {
         return `${__dirname}`
     }
 
+    getFullPathTemplates() {
+        return `${this.getFullPathBase()}/packages`
+    }
+
     getFullPathTemplate(name: string) {
-        return `${this.getFullPathBase()}/packages/${name}`
+        return `${this.getFullPathTemplates()}/${name}`
     }
 
     getFullPathTemplateModel(name: string) {

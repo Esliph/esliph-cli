@@ -4,12 +4,13 @@ import { TemplateControl } from '@templates/template.controller'
 import { Prompt, Question } from '@core/prompt'
 import { QUESTION_DEFAULT_PROPS } from '@utils/question'
 import { console } from '@utils/console'
+import { capitaliseTransform } from '@templates/helpers/capitalise-transform'
 
 export type ModuleArgs = {
     name: string
     includeCrud: boolean
-    isOperacional?: boolean
-    pluralName?: boolean
+    isEnity: boolean
+    pluralName?: string
 }
 
 export class ModuleCommand extends Command {
@@ -19,17 +20,16 @@ export class ModuleCommand extends Command {
             .summary('Generate module')
             .aliases(['m'])
             .option('-n, --name [type]', 'Name module')
-            .option('-ic, --include-crud <value>', 'Include CRUD generator', true)
             .option('-nic, --not-include-crud', 'Not include CRUD generator', false)
             .option('-pn, --plural-name [type]', 'Plural name module')
-            .option('-op, --operational', 'If  a module operacional', false)
+            .option('-ne, --no-entity', 'Module not references a entity model', false)
             .action(async args => await this.action(args))
     }
 
     async action(args: any) {
         const dataArgs = {
             includeCrud: !args.notIncludeCrud,
-            isOperacional: args.operational,
+            isEnity: !args.noEntity,
             name: args.name,
             pluralName: args.pluralName
         }
@@ -41,9 +41,12 @@ export class ModuleCommand extends Command {
         const data: ModuleArgs = {
             name: answers.name,
             pluralName: dataArgs.pluralName,
-            includeCrud: dataArgs.includeCrud,
-            isOperacional: dataArgs.isOperacional
+            includeCrud: !!dataArgs.includeCrud,
+            isEnity: !!dataArgs.isEnity
         }
+
+        console.log(dataArgs)
+        console.log(data)
 
         const resultPerformTemplate = this.performTemplate(data)
 
@@ -84,6 +87,19 @@ export class ModuleCommand extends Command {
 
     private performTemplate(data: ModuleArgs) {
         const templateControl = new TemplateControl<ModuleArgs>('module')
+
+        const { pluralName } = data
+
+        if (pluralName) {
+            templateControl.handlebars.unregisterHelper('plural')
+            templateControl.handlebars.unregisterHelper('capitaliseAndPlural')
+            templateControl.handlebars.registerHelper('plural', () => {
+                return pluralName
+            })
+            templateControl.handlebars.registerHelper('capitaliseAndPlural', () => {
+                return capitaliseTransform(pluralName)
+            })
+        }
 
         const resultGenerateTemplete = templateControl.execute(data)
 
