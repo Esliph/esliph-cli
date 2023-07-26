@@ -66,9 +66,7 @@ export class TemplateControl<Parameters = any> {
                 const targetPath = 'examplos/' + nameTemplate + '/' + newName
 
                 this.writePathFile(basePath, targetPath, dirTemplate[firTemp])
-            } catch (err: any) {
-                console.log('!', err)
-            }
+            } catch (err: any) {}
         })
     }
 
@@ -87,8 +85,6 @@ export class TemplateControl<Parameters = any> {
         })
 
         const pathFullTarget = base + '/' + target
-
-        console.log(pathFullTarget)
 
         fs.writeFileSync(pathFullTarget, content)
 
