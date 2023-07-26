@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Delete, Put, UseGuards } from '@nestjs/common'
 import { Body, Res, Param } from '@nestjs/common/decorators'
 import { Response } from '@@types/http'
-import { {{ capitalise name }}Service } from '@modules/{{ name }}/{{ name }}.service'{{#if includeCrud}}{{#if isEnity}}
+import { {{ capitalise name }}Service } from '@modules/{{ name }}/{{ name }}.service'{{#if includeCrud}}{{#if isEntity}}
 import { {{ capitalise name }}UpdateUseCaseDTO } from '@modules/{{ name }}/use-case/update.use-case'
 import { {{ capitalise name }}DeleteUseCaseDTO } from '@modules/{{ name }}/use-case/delete.use-case'
 import { {{ capitalise name }}CreateUseCaseDTO } from '@modules/{{ name }}/use-case/create.use-case'{{/if}}{{/if}}
@@ -9,7 +9,7 @@ import { {{ capitalise name }}CreateUseCaseDTO } from '@modules/{{ name }}/use-c
 @Controller('/{{ plural name }}')
 export class {{ capitalise name }}Controller {
     constructor(private readonly {{ name }}Service: {{ capitalise name }}Service) { }
-{{#if includeCrud}}{{#if isEnity}}
+{{#if includeCrud}}{{#if isEntity}}
     @Get('/')
     async get{{ capitaliseAndPlural name }}(@Res() res: Response) {
         const response = await this.{{ name }}Service.get{{ capitaliseAndPlural name }}({})

@@ -1,4 +1,4 @@
-import { Provider } from '@nestjs/common'{{#if includeCrud}}{{#if isEnity}}
+import { Provider } from '@nestjs/common'{{#if includeCrud}}{{#if isEntity}}
 import { {{ capitalise name }}ModelTableRepositoryAbstract, {{ capitalise name }}ModelTableRepository } from '@modules/{{ name }}/repository/repository'
 import { {{ capitalise name }}CreateManyRepositoryAbstract, {{ capitalise name }}CreateManyRepository, {{ capitalise name }}CreateRepositoryAbstract, {{ capitalise name }}CreateRepository } from '@modules/{{ name }}/repository/create.repository'
 import { {{ capitalise name }}UpdateManyRepositoryAbstract, {{ capitalise name }}UpdateManyRepository, {{ capitalise name }}UpdateRepositoryAbstract, {{ capitalise name }}UpdateRepository } from '@modules/{{ name }}/repository/update.repository'
@@ -18,7 +18,7 @@ import {
     {{ capitalise name }}FindUniqueRepository
 } from '@modules/{{ name }}/repository/find.repository'
 {{/if}}{{/if}}
-export const {{ capitalise name }}Dependencies: Provider[] = [{{#if includeCrud}}{{#if isEnity}}
+export const {{ capitalise name }}Dependencies: Provider[] = [{{#if includeCrud}}{{#if isEntity}}
     {
         provide: {{ capitalise name }}ModelTableRepositoryAbstract,
         useClass: {{ capitalise name }}ModelTableRepository

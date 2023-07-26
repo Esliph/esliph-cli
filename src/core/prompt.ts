@@ -1,12 +1,12 @@
-import inquirer, { QuestionCollection } from 'inquirer'
+import inquirer, { QuestionCollection, Answers as AnswersModel } from 'inquirer'
 
 export type Question = QuestionCollection
 
 export class Prompt {
     private static readonly prompt = inquirer.createPromptModule({})
 
-    async prompt<Answers>(questions: QuestionCollection<Answers>, initialAnswers?: Partial<Answers>) {
-        const answers = await Prompt.prompt(questions, { ...initialAnswers })
+    async prompt<Answers extends AnswersModel>(questions: QuestionCollection<Answers>, initialAnswers?: Partial<Answers>) {
+        const answers = await Prompt.prompt(questions, initialAnswers)
         return answers
     }
 }

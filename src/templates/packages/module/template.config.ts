@@ -1,11 +1,11 @@
-import { ModuleArgs } from '@commands/module.command'
-import { TemplateConfig } from '@templates/template'
+import { ModuleArgs } from "../../../commands/module.command.js"
+import { TemplateConfig } from "../../template.js"
 
 function IncludeCrud({ includeCrud }: ModuleArgs) {
     return includeCrud
 }
-function IsEntity({ isEnity }: ModuleArgs) {
-    return isEnity
+function IsEntity({ isEntity }: ModuleArgs) {
+    return isEntity
 }
 
 function ValidateCrudGeneration(data: ModuleArgs) {

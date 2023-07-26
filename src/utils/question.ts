@@ -1,5 +1,5 @@
-import { console } from '@utils/console'
-import { Question } from '@core/prompt'
+import { Question } from "../core/prompt.js"
+import { console } from "./console.js"
 
 export const QUESTION_DEFAULT_PROPS: Question = {
     prefix: console.colorizeText('#', { color: 'greenLight' }),

@@ -1,10 +1,10 @@
 import { Result } from '@esliph/util-node'
 import Handlebars from 'handlebars'
 import fs from 'node:fs'
-import { TemplateConfig } from '@templates/template'
-import { capitaliseTransform } from '@templates/helpers/capitalise-transform'
-import { pluralTransform } from '@templates/helpers/plural-transform'
-import { console } from '@utils/console'
+import { capitaliseTransform } from './helpers/capitalise-transform.js'
+import { pluralTransform } from './helpers/plural-transform.js'
+import { TemplateConfig } from './template.js'
+import { console } from '../utils/console.js'
 
 export class TemplateControl<Parameters = any> {
     constructor(public templateName: string, public handlebars = Handlebars.create()) {
@@ -70,7 +70,7 @@ export class TemplateControl<Parameters = any> {
                 const targetPath = 'examplos/' + nameTemplate + '/' + newName
 
                 this.writePathFile(basePath, targetPath, dirTemplate[firTemp])
-            } catch (err: any) {}
+            } catch (err: any) { }
         })
     }
 

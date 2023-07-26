@@ -1,5 +1,5 @@
 import { {{ capitalise name }}Dependencies } from '@modules/{{ name }}/{{ name }}.dependencies'
-import { Global, Module, Provider } from '@nestjs/common'{{#if includeCrud && isEnity}}
+import { Global, Module, Provider } from '@nestjs/common'{{#if includeCrud && isEntity}}
 import { {{ capitalise name }}DeleteUseCase } from '@modules/{{ name }}/use-case/delete.use-case'
 import { {{ capitalise name }}ListUseCase } from '@modules/{{ name }}/use-case/list.use-case'
 import { {{ capitalise name }}UpdateUseCase } from '@modules/{{ name }}/use-case/update.use-case'
@@ -7,7 +7,7 @@ import { {{ capitalise name }}FindOneUseCase } from '@modules/{{ name }}/use-cas
 import { {{ capitalise name }}CreateUseCase } from '@modules/{{ name }}/use-case/create.use-case'{{/if}}
 
 const {{ name }}ServicesUseCase: Provider[] = [
-    ...{{ capitalise name }}Dependencies,{{#if includeCrud && isEnity}}
+    ...{{ capitalise name }}Dependencies,{{#if includeCrud && isEntity}}
         {{ capitalise name }}CreateUseCase,
         {{ capitalise name }}ListUseCase,
         {{ capitalise name }}UpdateUseCase,

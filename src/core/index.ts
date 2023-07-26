@@ -1,26 +1,24 @@
 import { Command as CommandCli } from 'commander'
-import { console } from '@utils/console'
-import packageConfig from '@package.json'
-import { Command } from '@commands/command'
+import { Command } from '../commands/command.js'
 
 export class LiphCoreCli {
     static readonly program: CommandCli = new CommandCli()
     private static commands: Command[] = []
 
-    private constructor() {}
+    private constructor() { }
 
     static async factory(commands: (new () => Command)[]) {
         this.programConfig()
         this.initCommands(commands)
         this.initArgs()
-        this.unknowCommand()
+        this.unknownCommand()
     }
 
     private static programConfig() {
         this.program
             .name('liph')
-            .description(packageConfig.description)
-            .version(packageConfig.version, '-v, --version, version')
+            .description('')
+            .version('1.0.0', '-v, --version, version')
             .usage('<command> [options]')
             .helpOption('-h, --help', 'Output usage information.')
             .showHelpAfterError('add --help for more details')
@@ -51,5 +49,5 @@ export class LiphCoreCli {
         this.commands.push(command)
     }
 
-    private static unknowCommand() {}
+    private static unknownCommand() { }
 }

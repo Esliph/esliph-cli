@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { HttpEsliph, Result } from '@esliph/util-node'{{#if includeCrud}}{{#if isEnity}}
+import { HttpEsliph, Result } from '@esliph/util-node'{{#if includeCrud}}{{#if isEntity}}
 import { {{ capitalise name }}CreateUseCase, {{ capitalise name }}CreateUseCaseArgs } from '@modules/{{ name }}/use-case/create.use-case'
 import { {{ capitalise name }}FindOneUseCase, {{ capitalise name }}FindOneUseCaseArgs } from '@modules/{{ name }}/use-case/find-one.use-case'
 import { {{ capitalise name }}ListUseCase, {{ capitalise name }}ListUseCaseArgs } from '@modules/{{ name }}/use-case/list.use-case'
@@ -8,14 +8,14 @@ import { {{ capitalise name }}DeleteUseCase, {{ capitalise name }}DeleteUseCaseA
 
 @Injectable()
 export class {{ capitalise name }}Service {
-    constructor({{#if includeCrud}}{{#if isEnity}}
+    constructor({{#if includeCrud}}{{#if isEntity}}
         private readonly createUC: {{ capitalise name }}CreateUseCase,
         private readonly listUC: {{ capitalise name }}ListUseCase,
         private readonly updateUC: {{ capitalise name }}UpdateUseCase,
         private readonly deleteUC: {{ capitalise name }}DeleteUseCase,
         private readonly findUC: {{ capitalise name }}FindOneUseCase{{/if}}{{/if}}
     ) { }
-{{#if includeCrud}}{{#if isEnity}}
+{{#if includeCrud}}{{#if isEntity}}
     async get{{ capitaliseAndPlural name }}(body?: {{ capitalise name }}ListUseCaseArgs) {
         try {
             const response = await this.listUC.perform({ ...body })

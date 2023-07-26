@@ -1,15 +1,15 @@
 import { Command as CommandCli } from 'commander'
-import { Command } from '@commands/command'
-import { TemplateControl } from '@templates/template.controller'
-import { Prompt, Question } from '@core/prompt'
-import { QUESTION_DEFAULT_PROPS } from '@utils/question'
-import { console } from '@utils/console'
-import { capitaliseTransform } from '@templates/helpers/capitalise-transform'
+import { Command } from './command.js'
+import { Prompt, Question } from '../core/prompt.js'
+import { QUESTION_DEFAULT_PROPS } from '../utils/question.js'
+import { console } from '../utils/console.js'
+import { TemplateControl } from '../templates/template.controller.js'
+import { capitaliseTransform } from '../templates/helpers/capitalise-transform.js'
 
 export type ModuleArgs = {
     name: string
     includeCrud: boolean
-    isEnity: boolean
+    isEntity: boolean
     pluralName?: string
 }
 
@@ -29,7 +29,7 @@ export class ModuleCommand extends Command {
     async action(args: any) {
         const dataArgs = {
             includeCrud: !args.notIncludeCrud,
-            isEnity: args.entity,
+            isEntity: args.entity,
             name: args.name,
             pluralName: args.pluralName
         }
@@ -42,7 +42,7 @@ export class ModuleCommand extends Command {
             name: answers.name,
             pluralName: dataArgs.pluralName,
             includeCrud: !!dataArgs.includeCrud,
-            isEnity: !!dataArgs.isEnity
+            isEntity: !!dataArgs.isEntity
         }
 
         console.log(dataArgs)
@@ -70,7 +70,7 @@ export class ModuleCommand extends Command {
                     }
 
                     if (value.split(' ').length > 1) {
-                        return `"Name" cannot contein spaces`
+                        return `"Name" cannot contain spaces`
                     }
 
                     return true
@@ -101,8 +101,8 @@ export class ModuleCommand extends Command {
             })
         }
 
-        const resultGenerateTemplete = templateControl.execute(data)
+        const resultGenerateTemplate = templateControl.execute(data)
 
-        return resultGenerateTemplete
+        return resultGenerateTemplate
     }
 }
