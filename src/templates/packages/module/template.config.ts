@@ -12,7 +12,7 @@ function ValidateCrudGeneration(data: ModuleArgs) {
     return IncludeCrud(data) && IsEntity(data)
 }
 
-const TEMPLATE_CONFIG: TemplateConfig<ModuleArgs> = {
+export const TEMPLATE_CONFIG: TemplateConfig<ModuleArgs> = {
     files: {
         'schema.txt': {
             name: 'schema.ts'
@@ -75,5 +75,3 @@ const TEMPLATE_CONFIG: TemplateConfig<ModuleArgs> = {
     },
     nameTemplate: data => data.name
 }
-
-module.exports = TEMPLATE_CONFIG

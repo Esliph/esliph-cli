@@ -7,9 +7,9 @@ const TEMPLATES = {
     info: '<message>'
 }
 
-class Console extends ConsoleEsliph<typeof TEMPLATES.log, typeof TEMPLATES.error, typeof TEMPLATES.warn, typeof TEMPLATES.info> {}
+class Console extends ConsoleEsliph<typeof TEMPLATES.log, typeof TEMPLATES.error, typeof TEMPLATES.warn, typeof TEMPLATES.info> { }
 
-export const console = new Console({
+export const consoleLiph = new Console({
     templates: {
         error: TEMPLATES.error,
         log: TEMPLATES.log,

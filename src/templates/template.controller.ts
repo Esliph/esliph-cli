@@ -4,7 +4,8 @@ import fs from 'node:fs'
 import { capitaliseTransform } from './helpers/capitalise-transform.js'
 import { pluralTransform } from './helpers/plural-transform.js'
 import { TemplateConfig } from './template.js'
-import { console } from '../utils/console.js'
+import { consoleLiph } from '../utils/console.js'
+import { TEMPLATES_CONFIG } from './packages/templates.config.js'
 
 export class TemplateControl<Parameters = any> {
     constructor(public templateName: string, public handlebars = Handlebars.create()) {
@@ -19,9 +20,9 @@ export class TemplateControl<Parameters = any> {
         })
     }
 
-    execute(data: Parameters) {
+    execute(data: Parameters, dist: string) {
         try {
-            return this.generateTemplates(this.templateName, data)
+            return this.generateTemplates(this.templateName, data, dist)
         } catch (err: any) {
             if (err instanceof Result) {
                 return Result.failure<false>(err.getError(), err.getStatus())
@@ -34,16 +35,16 @@ export class TemplateControl<Parameters = any> {
         }
     }
 
-    generateTemplates(name: string, data: Parameters) {
+    generateTemplates(name: string, data: Parameters, dist: string) {
         const filesDirTarget = this.getTemplateFiles(name)
         const configTemplate = this.getTemplateConfig(name)
 
-        this.writeTemplate(name, data, filesDirTarget.getValue(), configTemplate.getValue())
+        this.writeTemplate(name, data, filesDirTarget.getValue(), configTemplate.getValue(), dist)
 
         return Result.success(true)
     }
 
-    writeTemplate(name: string, data: Parameters, filesDirTarget: string[], configTemplate: TemplateConfig) {
+    writeTemplate(name: string, data: Parameters, filesDirTarget: string[], configTemplate: TemplateConfig, dist: string) {
         const dirTemplate: { [x: string]: string } = {}
 
         filesDirTarget.forEach(firTemp => {
@@ -61,16 +62,19 @@ export class TemplateControl<Parameters = any> {
 
                 dirTemplate[firTemp] = this.handlebars.compile(fileContent, {})(data)
 
-                const basePath = process.cwd()
                 const nameConfig = configTemplate.files[firTemp]?.name
                 const nameTemplateConfig = configTemplate?.nameTemplate
                 const newName = typeof nameConfig == 'undefined' ? firTemp : typeof nameConfig == 'string' ? nameConfig : nameConfig(data)
                 const nameTemplate =
                     typeof nameTemplateConfig == 'undefined' ? name : typeof nameTemplateConfig == 'string' ? nameTemplateConfig : nameTemplateConfig(data)
-                const targetPath = 'examplos/' + nameTemplate + '/' + newName
+                const targetPath = '/' + nameTemplate + '/' + newName
 
-                this.writePathFile(basePath, targetPath, dirTemplate[firTemp])
-            } catch (err: any) { }
+                console.log(dist, targetPath)
+
+                this.writePathFile(dist, targetPath, dirTemplate[firTemp])
+            } catch (err: any) {
+                console.log(err)
+            }
         })
     }
 
@@ -90,9 +94,11 @@ export class TemplateControl<Parameters = any> {
 
         const pathFullTarget = base + '/' + target
 
+        console.log(pathFullTarget)
+
         fs.writeFileSync(pathFullTarget, content)
 
-        console.log(`${console.colorizeText('CREATED', { color: 'green' })} ${pathFullTarget}`)
+        consoleLiph.log(`${consoleLiph.colorizeText('CREATED', { color: 'green' })} ${pathFullTarget}`)
     }
 
     getAllTemplates() {
@@ -103,9 +109,7 @@ export class TemplateControl<Parameters = any> {
 
     getTemplateConfig(name: string) {
         try {
-            const templateConfig = require(this.getFullPathTemplateConfig(name))
-
-            return Result.success<TemplateConfig>(templateConfig)
+            return Result.success<TemplateConfig>(TEMPLATES_CONFIG[name])
         } catch (err: any) {
             throw Result.failure<TemplateConfig>({
                 title: 'Get Config Tamplates',

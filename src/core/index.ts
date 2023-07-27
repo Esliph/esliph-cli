@@ -17,8 +17,8 @@ export class LiphCoreCli {
     private static programConfig() {
         this.program
             .name('liph')
-            .description('')
-            .version('1.0.0', '-v, --version, version')
+            .description('Liph is cli for development')
+            .version('1.0.0', '-v, --version')
             .usage('<command> [options]')
             .helpOption('-h, --help', 'Output usage information.')
             .showHelpAfterError('add --help for more details')
