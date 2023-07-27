@@ -1,0 +1,47 @@
+import { Controller, Get, Post, Delete, Put, UseGuards } from '@nestjs/common'
+import { Body, Res, Param } from '@nestjs/common/decorators'
+import { Response } from '@@types/http'
+import { {{ capitalise name }}Service } from '@modules/{{ name }}/{{ name }}.service'{{#if includeCrud}}{{#if isEntity}}
+import { {{ capitalise name }}UpdateUseCaseDTO } from '@modules/{{ name }}/use-case/update.use-case'
+import { {{ capitalise name }}DeleteUseCaseDTO } from '@modules/{{ name }}/use-case/delete.use-case'
+import { {{ capitalise name }}CreateUseCaseDTO } from '@modules/{{ name }}/use-case/create.use-case'{{/if}}{{/if}}
+
+@Controller('/{{ plural name }}')
+export class {{ capitalise name }}Controller {
+    constructor(private readonly {{ name }}Service: {{ capitalise name }}Service) { }
+{{#if includeCrud}}{{#if isEntity}}
+    @Get('/')
+    async get{{ capitaliseAndPlural name }}(@Res() res: Response) {
+        const response = await this.{{ name }}Service.get{{ capitaliseAndPlural name }}({})
+
+        return res.status(response.getStatus()).send(response.getResponse())
+    }
+
+    @Get('/:id')
+    async get{{ capitalise name }}(@Param('id') id: string, @Res() res: Response) {
+        const response = await this.{{ name }}Service.get{{ capitalise name }}({ id })
+
+        return res.status(response.getStatus()).send(response.getResponse())
+    }
+
+    @Post('/create')
+    async create(@Body() body: {{ capitalise name }}CreateUseCaseDTO, @Res() res: Response) {
+        const response = await this.{{ name }}Service.create({ ...body })
+
+        return res.status(response.getStatus()).send(response.getResponse())
+    }
+
+    @Put('/update/:id')
+    async update(@Param('id') id: string, @Body() body: {{ capitalise name }}UpdateUseCaseDTO, @Res() res: Response) {
+        const response = await this.{{ name }}Service.update({ id, ...body })
+
+        return res.status(response.getStatus()).send(response.getResponse())
+    }
+
+    @Delete('/delete/:id')
+    async delete(@Param('id') id: string, @Body() body: {{ capitalise name }}DeleteUseCaseDTO, @Res() res: Response) {
+        const response = await this.{{ name }}Service.delete({ id, ...body })
+
+        return res.status(response.getStatus()).send(response.getResponse())
+    }{{/if}}{{/if}}
+}

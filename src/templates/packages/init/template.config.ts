@@ -6,6 +6,7 @@ export const TEMPLATE_CONFIG: TemplateConfig<InitArgs> = {
         'liph.txt': {
             name: 'liph.json'
         }
-    }
+    },
+    notGroupFolder: true
 }
 

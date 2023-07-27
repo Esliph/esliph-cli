@@ -6,6 +6,13 @@ import { pluralTransform } from './helpers/plural-transform.js'
 import { TemplateConfig } from './template.js'
 import { consoleLiph } from '../utils/console.js'
 import { TEMPLATES_CONFIG } from './packages/templates.config.js'
+import path from "path"
+
+const __dirname = path.join(path.dirname(process.argv[1]), '..', 'templates')
+
+function getPath(...paths: string[]) {
+    return path.join(...paths)
+}
 
 export class TemplateControl<Parameters = any> {
     constructor(public templateName: string, public handlebars = Handlebars.create()) {
@@ -65,11 +72,8 @@ export class TemplateControl<Parameters = any> {
                 const nameConfig = configTemplate.files[firTemp]?.name
                 const nameTemplateConfig = configTemplate?.nameTemplate
                 const newName = typeof nameConfig == 'undefined' ? firTemp : typeof nameConfig == 'string' ? nameConfig : nameConfig(data)
-                const nameTemplate =
-                    typeof nameTemplateConfig == 'undefined' ? name : typeof nameTemplateConfig == 'string' ? nameTemplateConfig : nameTemplateConfig(data)
-                const targetPath = '/' + nameTemplate + '/' + newName
-
-                console.log(dist, targetPath)
+                const nameTemplate = typeof nameTemplateConfig == 'undefined' ? name : typeof nameTemplateConfig == 'string' ? nameTemplateConfig : nameTemplateConfig(data)
+                const targetPath = getPath(configTemplate?.notGroupFolder ? '' : nameTemplate, newName)
 
                 this.writePathFile(dist, targetPath, dirTemplate[firTemp])
             } catch (err: any) {
@@ -79,11 +83,11 @@ export class TemplateControl<Parameters = any> {
     }
 
     writePathFile(base: string, target: string, content: string) {
-        const folders = target.split('/').slice(0, target.split('/').length - 1)
+        const folders = target.split(path.sep).slice(0, target.split(path.sep).length - 1)
 
         let currentFolder = base
         folders.forEach(folder => {
-            currentFolder += `/${folder}`
+            currentFolder = getPath(currentFolder, folder)
 
             try {
                 fs.accessSync(currentFolder, fs.constants.F_OK)
@@ -92,9 +96,7 @@ export class TemplateControl<Parameters = any> {
             }
         })
 
-        const pathFullTarget = base + '/' + target
-
-        console.log(pathFullTarget)
+        const pathFullTarget = getPath(base, target)
 
         fs.writeFileSync(pathFullTarget, content)
 
@@ -112,7 +114,7 @@ export class TemplateControl<Parameters = any> {
             return Result.success<TemplateConfig>(TEMPLATES_CONFIG[name])
         } catch (err: any) {
             throw Result.failure<TemplateConfig>({
-                title: 'Get Config Tamplates',
+                title: 'Get Config Templates',
                 message: [{ message: err.message }, { message: `Cannot find config template ${name}` }]
             })
         }
@@ -127,7 +129,7 @@ export class TemplateControl<Parameters = any> {
             return Result.success<string[]>(filesDirTarget)
         } catch (err: any) {
             return Result.failure<string[]>({
-                title: 'Get Config Tamplates',
+                title: 'Get Config Templates',
                 message: [{ message: err.message }, { message: `Cannot find config template ${name}` }]
             })
         }
@@ -138,22 +140,18 @@ export class TemplateControl<Parameters = any> {
     }
 
     getFullPathTemplates() {
-        return `${this.getFullPathBase()}/packages`
+        return getPath(this.getFullPathBase(), '..', '..', 'templates')
     }
 
     getFullPathTemplate(name: string) {
-        return `${this.getFullPathTemplates()}/${name}`
-    }
-
-    getFullPathTemplateModel(name: string) {
-        return `${this.getFullPathTemplate(name)}/model`
+        return getPath(this.getFullPathTemplates(), name)
     }
 
     getFullPathTemplateModelFile(name: string, fileName: string) {
-        return `${this.getFullPathTemplate(name)}/model/${fileName}`
+        return getPath(this.getFullPathTemplate(name), fileName)
     }
 
     getFullPathTemplateConfig(name: string) {
-        return `${this.getFullPathTemplate(name)}/template.config.ts`
+        return getPath(this.getFullPathBase(), 'packages', name, 'template.config.ts')
     }
 }

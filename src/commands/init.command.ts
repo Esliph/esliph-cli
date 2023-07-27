@@ -16,10 +16,11 @@ export class InitCommand extends Command {
 
     async action(args: any) {
         const response = this.performTemplate(args)
-        consoleLiph.log('Liph config generated')
 
         if (!response.isSuccess()) {
             consoleLiph.log(response.getError())
+        } else {
+            consoleLiph.log('Liph config generated')
         }
     }
 

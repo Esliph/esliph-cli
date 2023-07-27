@@ -1,0 +1,39 @@
+import { Injectable } from '@nestjs/common'
+import { Result } from '@esliph/util-node'
+import {
+    {{ capitalise name }}ModelTableRepositoryAbstract,
+    {{ capitalise name }}DeleteArgs,
+    {{ capitalise name }}DeleteResponse,
+    {{ capitalise name }}DeleteManyArgs,
+    {{ capitalise name }}DeleteManyResponse
+} from '@modules/{{ name }}/repository/repository'
+
+export abstract class {{ capitalise name }}DeleteRepositoryAbstract {
+    perform: (args: {{ capitalise name }}DeleteArgs) => Promise<Result<{{ capitalise name }}DeleteResponse>>
+}
+
+@Injectable()
+export class {{ capitalise name }}DeleteRepository implements {{ capitalise name }}DeleteRepositoryAbstract {
+    constructor(private readonly repository: {{ capitalise name }}ModelTableRepositoryAbstract) {}
+
+    async perform(args: {{ capitalise name }}DeleteArgs): Promise<Result<{{ capitalise name }}DeleteResponse>> {
+        const response = await this.repository.delete(args)
+
+        return response
+    }
+}
+
+export abstract class {{ capitalise name }}DeleteManyRepositoryAbstract {
+    perform: (args: {{ capitalise name }}DeleteManyArgs) => Promise<Result<{{ capitalise name }}DeleteManyResponse>>
+}
+
+@Injectable()
+export class {{ capitalise name }}DeleteManyRepository implements {{ capitalise name }}DeleteManyRepositoryAbstract {
+    constructor(private readonly repository: {{ capitalise name }}ModelTableRepositoryAbstract) {}
+
+    async perform(args: {{ capitalise name }}DeleteManyArgs): Promise<Result<{{ capitalise name }}DeleteManyResponse>> {
+        const response = await this.repository.deleteMany(args)
+
+        return response
+    }
+}

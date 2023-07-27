@@ -6,5 +6,6 @@ export type TemplateConfig<Parameters = any> = {
             inactive?: boolean
         }
     }
+    notGroupFolder?: boolean
     nameTemplate?: string | ((args: Parameters) => string)
 }

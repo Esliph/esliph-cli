@@ -7,7 +7,7 @@
         "types": [
             "node"
         ],
-        "declaration": true,
+        "declaration": false,
         "removeComments": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
@@ -16,7 +16,7 @@
         "alwaysStrict": true,
         "checkJs": false,
         "diagnostics": false,
-        "sourceMap": true,
+        "sourceMap": false,
         "outDir": "./dist",
         "incremental": true,
         "skipLibCheck": true,
@@ -31,5 +31,15 @@
         "noEmitHelpers": true,
         "esModuleInterop": true,
         "strict": true,
-    }
+    },
+    "exclude": [
+        "./node_modules",
+        "./docs",
+        "./dist",
+    ],
+    "include": [
+        "src/**/*",
+        "src/templates/packages/**/*",
+        "src/templates/packages/**/model/*"
+    ]
 }

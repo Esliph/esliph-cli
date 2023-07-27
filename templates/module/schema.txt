@@ -1,0 +1,22 @@
+{{#if isEntity}}import { {{ capitalise name }} as {{ capitalise name }}ModelPrisma } from '@prisma/client'{{/if}}
+import { HashEsliph } from '@esliph/util-node'
+
+{{#if isEntity}}export type {{ capitalise name }}ModelTable = {{ capitalise name }}ModelPrisma{{/if}}
+
+export type {{ capitalise name }}ModelSimple = {
+    /* Define props of "{{ capitalise name }}" */
+}
+
+{{#if isEntity}}export class {{ capitalise name }}EntityTable implements {{ capitalise name }}ModelTable {
+
+    constructor({}: {{ capitalise name }}ModelTable) {
+        throw new Error('Method not implemented')
+    }
+}{{/if}}
+
+export class {{ capitalise name }}EntitySimple implements {{ capitalise name }}ModelSimple {
+
+    constructor({}: {{ capitalise name }}ModelSimple) {
+        throw new Error('Method not implemented')
+    }
+}

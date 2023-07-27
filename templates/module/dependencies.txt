@@ -1,0 +1,74 @@
+import { Provider } from '@nestjs/common'{{#if includeCrud}}{{#if isEntity}}
+import { {{ capitalise name }}ModelTableRepositoryAbstract, {{ capitalise name }}ModelTableRepository } from '@modules/{{ name }}/repository/repository'
+import { {{ capitalise name }}CreateManyRepositoryAbstract, {{ capitalise name }}CreateManyRepository, {{ capitalise name }}CreateRepositoryAbstract, {{ capitalise name }}CreateRepository } from '@modules/{{ name }}/repository/create.repository'
+import { {{ capitalise name }}UpdateManyRepositoryAbstract, {{ capitalise name }}UpdateManyRepository, {{ capitalise name }}UpdateRepositoryAbstract, {{ capitalise name }}UpdateRepository } from '@modules/{{ name }}/repository/update.repository'
+import { {{ capitalise name }}DeleteManyRepositoryAbstract, {{ capitalise name }}DeleteManyRepository, {{ capitalise name }}DeleteRepositoryAbstract, {{ capitalise name }}DeleteRepository } from '@modules/{{ name }}/repository/delete.repository'
+import {
+    {{ capitalise name }}FindExistsRepositoryAbstract,
+    {{ capitalise name }}FindExistsRepository,
+    {{ capitalise name }}FindFirstOrThrowRepositoryAbstract,
+    {{ capitalise name }}FindFirstOrThrowRepository,
+    {{ capitalise name }}FindFirstRepositoryAbstract,
+    {{ capitalise name }}FindFirstRepository,
+    {{ capitalise name }}FindManyRepositoryAbstract,
+    {{ capitalise name }}FindManyRepository,
+    {{ capitalise name }}FindUniqueOrThrowRepositoryAbstract,
+    {{ capitalise name }}FindUniqueOrThrowRepository,
+    {{ capitalise name }}FindUniqueRepositoryAbstract,
+    {{ capitalise name }}FindUniqueRepository
+} from '@modules/{{ name }}/repository/find.repository'
+{{/if}}{{/if}}
+export const {{ capitalise name }}Dependencies: Provider[] = [{{#if includeCrud}}{{#if isEntity}}
+    {
+        provide: {{ capitalise name }}ModelTableRepositoryAbstract,
+        useClass: {{ capitalise name }}ModelTableRepository
+    },
+    {
+        provide: {{ capitalise name }}CreateManyRepositoryAbstract,
+        useClass: {{ capitalise name }}CreateManyRepository
+    },
+    {
+        provide: {{ capitalise name }}CreateRepositoryAbstract,
+        useClass: {{ capitalise name }}CreateRepository
+    },
+    {
+        provide: {{ capitalise name }}UpdateManyRepositoryAbstract,
+        useClass: {{ capitalise name }}UpdateManyRepository
+    },
+    {
+        provide: {{ capitalise name }}UpdateRepositoryAbstract,
+        useClass: {{ capitalise name }}UpdateRepository
+    },
+    {
+        provide: {{ capitalise name }}DeleteManyRepositoryAbstract,
+        useClass: {{ capitalise name }}DeleteManyRepository
+    },
+    {
+        provide: {{ capitalise name }}DeleteRepositoryAbstract,
+        useClass: {{ capitalise name }}DeleteRepository
+    },
+    {
+        provide: {{ capitalise name }}FindExistsRepositoryAbstract,
+        useClass: {{ capitalise name }}FindExistsRepository
+    },
+    {
+        provide: {{ capitalise name }}FindFirstOrThrowRepositoryAbstract,
+        useClass: {{ capitalise name }}FindFirstOrThrowRepository
+    },
+    {
+        provide: {{ capitalise name }}FindFirstRepositoryAbstract,
+        useClass: {{ capitalise name }}FindFirstRepository
+    },
+    {
+        provide: {{ capitalise name }}FindManyRepositoryAbstract,
+        useClass: {{ capitalise name }}FindManyRepository
+    },
+    {
+        provide: {{ capitalise name }}FindUniqueOrThrowRepositoryAbstract,
+        useClass: {{ capitalise name }}FindUniqueOrThrowRepository
+    },
+    {
+        provide: {{ capitalise name }}FindUniqueRepositoryAbstract,
+        useClass: {{ capitalise name }}FindUniqueRepository
+    }{{/if}}{{/if}}
+]

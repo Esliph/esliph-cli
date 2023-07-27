@@ -1,0 +1,66 @@
+import { Injectable } from '@nestjs/common'
+import { HttpEsliph, Result } from '@esliph/util-node'
+import { z } from 'zod'
+import { ZodValidateService } from '@services/zod'
+import { ResultException } from '@util/exceptions/result.exception'
+import { {{ capitalise name }}PropSelect } from '@modules/{{ name }}/repository/repository'
+import { {{ capitalise name }}FindUniqueRepositoryAbstract } from '@modules/{{ name }}/repository/find.repository'
+
+export class {{ capitalise name }}FindOneUseCaseDTO {
+    /* Set the DTO properties to list "{{ capitalise name }}" */
+}
+
+export const {{ capitalise name }}FindOneUseCaseArgsSchema = ZodValidateService.defaultSchemaModelTable()
+
+const {{ capitalise name }}PropsSelected = {
+    /* Defines the properties that must be retrieved when searching for "{{ capitalise name }}" */
+}
+
+export type {{ capitalise name }}FindOneUseCaseArgs = z.input<typeof {{ capitalise name }}FindOneUseCaseArgsSchema>
+export type {{ capitalise name }}FindOneUseCaseResponse = z.output<typeof {{ capitalise name }}FindOneUseCaseArgsSchema>
+export type {{ capitalise name }}FindOneUseCasePerformResponseValue = { {{ name }}: {{ capitalise name }}PropSelect<{ select: typeof {{ capitalise name }}PropsSelected }> }
+export type {{ capitalise name }}FindOneUseCasePerformResponse = Promise<Result<{{ capitalise name }}FindOneUseCasePerformResponseValue>>
+
+@Injectable()
+export class {{ capitalise name }}FindOneUseCase {
+    constructor(private readonly find{{ capitalise name }}Repository: {{ capitalise name }}FindUniqueRepositoryAbstract) { }
+
+    async perform(findArgs: {{ capitalise name }}FindOneUseCaseArgs): {{ capitalise name }}FindOneUseCasePerformResponse {
+        try {
+            const responsePerform = await this.performFindOne(findArgs)
+
+            return responsePerform
+        } catch (err: any) {
+            if (err instanceof ResultException) {
+                return err
+            }
+            return Result.failure({ title: 'Find {{ capitalise name }}', message: [{ message: 'Cannot find {{ name }}' }] }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+        }
+    }
+
+    private async performFindOne(findArgs: {{ capitalise name }}FindOneUseCaseArgs): {{ capitalise name }}FindOneUseCasePerformResponse {
+        const findArgsValidationResult = this.validateArgsProps(findArgs)
+
+        const findArgsDTO = findArgsValidationResult.getValue()
+
+        const performFindRepositoryResult = await this.performFindRepository(findArgsDTO)
+
+        if (!performFindRepositoryResult.isSuccess()) {
+            return Result.failure(performFindRepositoryResult.getError(), performFindRepositoryResult.getStatus())
+        }
+
+        return Result.success<{{ capitalise name }}FindOneUseCasePerformResponseValue>(performFindRepositoryResult.getValue(), performFindRepositoryResult.getStatus())
+    }
+
+    private validateArgsProps(findArgs: {{ capitalise name }}FindOneUseCaseArgs) {
+        const {{ name }}FindDTO = ZodValidateService.performParse(findArgs, {{ capitalise name }}FindOneUseCaseArgsSchema)
+
+        return {{ name }}FindDTO
+    }
+
+    private async performFindRepository(findArgs: {{ capitalise name }}FindOneUseCaseResponse) {
+        const response = await this.find{{ capitalise name }}Repository.perform({ where: { id: findArgs.id }, select: {{ capitalise name }}PropsSelected })
+
+        return response
+    }
+}
