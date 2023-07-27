@@ -1,21 +1,27 @@
 {
-    "name": "workspace",
+    "name": "@esliph/cli",
     "description": "",
     "version": "1.0.0",
-    "main": "dist/index.js",
+    "main": "dist/bin/liph.js",
     "type": "module",
     "scripts": {
-        "start:production": "dist/index.js",
-        "start:dev": "tsx src/index.ts",
-        "build:dev": "tsup src",
+        "start:production": "dist/bin/liph.js",
+        "start:dev": "tsx src/bin/liph.ts",
+        "build:dev": "tsc --watch",
         "build": "tsc"
+    },
+    "files": [
+        "dist"
+    ],
+    "publishConfig": {
+        "access": "public"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Esliph/esliph-cli.git"
     },
     "bin": {
-        "liph": "./dist/index.js"
+        "liph": "./dist/bin/liph.js"
     },
     "keywords": [],
     "author": "Esliph",
@@ -26,6 +32,7 @@
     "homepage": "https://github.com/Esliph/esliph-cli#readme",
     "devDependencies": {
         "@salesforce/eslint-config-lwc": "^3.5.0",
+        "@types/figlet": "^1.5.6",
         "@typescript-eslint/eslint-plugin": "^5.0.0",
         "@typescript-eslint/parser": "^5.0.0",
         "eslint": "^8.0.1",
@@ -41,6 +48,7 @@
         "@types/inquirer": "^9.0.3",
         "@types/node": "^20.3.1",
         "commander": "^11.0.0",
+        "figlet": "^1.6.0",
         "handlebars": "^4.7.7",
         "inquirer": "^9.2.8"
     }

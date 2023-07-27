@@ -1,11 +1,13 @@
 import { Command as CommandCli } from 'commander'
+import figlet from 'figlet'
 import { Command } from '../commands/command.js'
+import { consoleLiph } from '../utils/console.js'
 
 export class LiphCoreCli {
     static readonly program: CommandCli = new CommandCli()
     private static commands: Command[] = []
 
-    private constructor() { }
+    private constructor() {}
 
     static async factory(commands: (new () => Command)[]) {
         this.programConfig()
@@ -27,6 +29,8 @@ export class LiphCoreCli {
                 writeOut: mess => console.log(mess),
                 outputError: mess => console.error(mess)
             })
+
+        console.log(consoleLiph.colorizeText(figlet.textSync('Liph CLI'), { color: 'green' }))
     }
 
     private static initArgs() {
@@ -49,5 +53,5 @@ export class LiphCoreCli {
         this.commands.push(command)
     }
 
-    private static unknownCommand() { }
+    private static unknownCommand() {}
 }
