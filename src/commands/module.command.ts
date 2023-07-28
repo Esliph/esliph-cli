@@ -5,6 +5,9 @@ import { QUESTION_DEFAULT_PROPS } from '../utils/question.js'
 import { consoleLiph } from '../utils/console.js'
 import { TemplateControl } from '../templates/template.controller.js'
 import { capitaliseTransform } from '../templates/helpers/capitalise-transform.js'
+import { getFileCliConfig } from '../utils/cli-config.js'
+import { getPath } from '../utils/path.js'
+import path from 'path'
 
 export type ModuleArgs = {
     name: string
@@ -34,7 +37,7 @@ export class ModuleCommand extends Command {
             pluralName: args.pluralName
         }
 
-        consoleLiph.log('Generation new module...')
+        consoleLiph.log('\nGeneration new module...')
 
         const answers = await this.performPrompt(dataArgs)
 
@@ -44,9 +47,6 @@ export class ModuleCommand extends Command {
             includeCrud: !!dataArgs.includeCrud,
             isEntity: !!dataArgs.isEntity
         }
-
-        console.log(dataArgs)
-        console.log(data)
 
         const resultPerformTemplate = this.performTemplate(data)
 
@@ -101,7 +101,11 @@ export class ModuleCommand extends Command {
             })
         }
 
-        const resultGenerateTemplate = templateControl.execute(data, process.cwd())
+        const cliConfigPAthDistModule = getPath(process.cwd(), ...getFileCliConfig().module.dist.split(path.sep))
+
+        console.log(cliConfigPAthDistModule)
+
+        const resultGenerateTemplate = templateControl.execute(data, cliConfigPAthDistModule)
 
         return resultGenerateTemplate
     }

@@ -1,18 +1,17 @@
 import { Result } from '@esliph/util-node'
 import Handlebars from 'handlebars'
 import fs from 'node:fs'
+import path from "path"
 import { capitaliseTransform } from './helpers/capitalise-transform.js'
 import { pluralTransform } from './helpers/plural-transform.js'
 import { TemplateConfig } from './template.js'
 import { consoleLiph } from '../utils/console.js'
 import { TEMPLATES_CONFIG } from './packages/templates.config.js'
-import path from "path"
+import { getFile, getPath } from '../utils/path.js'
 
-const __dirname = path.join(path.dirname(process.argv[1]), '..', 'templates')
+const __dirname = getPath(path.dirname(process.argv[1]), '..', 'templates')
 
-function getPath(...paths: string[]) {
-    return path.join(...paths)
-}
+const cliConfig = getFile(getPath(process.cwd(), "liph.json"))
 
 export class TemplateControl<Parameters = any> {
     constructor(public templateName: string, public handlebars = Handlebars.create()) {
@@ -65,7 +64,7 @@ export class TemplateControl<Parameters = any> {
                     return
                 }
 
-                const fileContent = fs.readFileSync(this.getFullPathTemplateModelFile(name, firTemp), 'utf-8')
+                const fileContent = getFile(this.getFullPathTemplateModelFile(name, firTemp))
 
                 dirTemplate[firTemp] = this.handlebars.compile(fileContent, {})(data)
 
@@ -83,9 +82,9 @@ export class TemplateControl<Parameters = any> {
     }
 
     writePathFile(base: string, target: string, content: string) {
-        const folders = target.split(path.sep).slice(0, target.split(path.sep).length - 1)
+        const folders = [...base.split(path.sep), ...target.split(path.sep).slice(0, target.split(path.sep).length - 1)]
 
-        let currentFolder = base
+        let currentFolder = ''
         folders.forEach(folder => {
             currentFolder = getPath(currentFolder, folder)
 
@@ -96,11 +95,11 @@ export class TemplateControl<Parameters = any> {
             }
         })
 
-        const pathFullTarget = getPath(base, target)
+        console.log(currentFolder)
 
-        fs.writeFileSync(pathFullTarget, content)
+        fs.writeFileSync(currentFolder, content)
 
-        consoleLiph.log(`${consoleLiph.colorizeText('CREATED', { color: 'green' })} ${pathFullTarget}`)
+        consoleLiph.log(`${consoleLiph.colorizeText('CREATED', { color: 'green' })} ${target}`)
     }
 
     getAllTemplates() {
