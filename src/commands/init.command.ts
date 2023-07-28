@@ -27,7 +27,7 @@ export class InitCommand extends Command {
     private performTemplate(data: InitArgs) {
         const templateControl = new TemplateControl<InitArgs>('init')
 
-        const resultGenerateTemplate = templateControl.execute(data, process.cwd())
+        const resultGenerateTemplate = templateControl.execute(data, '')
 
         return resultGenerateTemplate
     }

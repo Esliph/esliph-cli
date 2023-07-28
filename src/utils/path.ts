@@ -1,10 +1,15 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import fs from 'node:fs'
+import path from 'node:path'
 
 export function getFile(path: string) {
-    const result = fs.readFileSync(path, 'utf-8')
+    try {
+        const result = fs.readFileSync(path, 'utf-8')
 
-    return result
+        return result
+    } catch (e) {
+        console.log(e)
+        return ''
+    }
 }
 
 export function getPath(...paths: string[]) {

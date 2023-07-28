@@ -1,7 +1,7 @@
 import { Result } from '@esliph/util-node'
 import Handlebars from 'handlebars'
 import fs from 'node:fs'
-import path from "path"
+import path from 'path'
 import { capitaliseTransform } from './helpers/capitalise-transform.js'
 import { pluralTransform } from './helpers/plural-transform.js'
 import { TemplateConfig } from './template.js'
@@ -10,8 +10,6 @@ import { TEMPLATES_CONFIG } from './packages/templates.config.js'
 import { getFile, getPath } from '../utils/path.js'
 
 const __dirname = getPath(path.dirname(process.argv[1]), '..', 'templates')
-
-const cliConfig = getFile(getPath(process.cwd(), "liph.json"))
 
 export class TemplateControl<Parameters = any> {
     constructor(public templateName: string, public handlebars = Handlebars.create()) {
@@ -71,7 +69,8 @@ export class TemplateControl<Parameters = any> {
                 const nameConfig = configTemplate.files[firTemp]?.name
                 const nameTemplateConfig = configTemplate?.nameTemplate
                 const newName = typeof nameConfig == 'undefined' ? firTemp : typeof nameConfig == 'string' ? nameConfig : nameConfig(data)
-                const nameTemplate = typeof nameTemplateConfig == 'undefined' ? name : typeof nameTemplateConfig == 'string' ? nameTemplateConfig : nameTemplateConfig(data)
+                const nameTemplate =
+                    typeof nameTemplateConfig == 'undefined' ? name : typeof nameTemplateConfig == 'string' ? nameTemplateConfig : nameTemplateConfig(data)
                 const targetPath = getPath(configTemplate?.notGroupFolder ? '' : nameTemplate, newName)
 
                 this.writePathFile(dist, targetPath, dirTemplate[firTemp])
@@ -95,9 +94,7 @@ export class TemplateControl<Parameters = any> {
             }
         })
 
-        console.log(currentFolder)
-
-        fs.writeFileSync(currentFolder, content)
+        fs.writeFileSync(getPath(currentFolder, target), content)
 
         consoleLiph.log(`${consoleLiph.colorizeText('CREATED', { color: 'green' })} ${target}`)
     }

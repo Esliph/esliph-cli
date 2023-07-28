@@ -1,0 +1,5 @@
+{
+    "module": {
+        "dist": "./src/app/module"
+    }
+}
