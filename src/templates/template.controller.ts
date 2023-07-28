@@ -94,7 +94,7 @@ export class TemplateControl<Parameters = any> {
             }
         })
 
-        fs.writeFileSync(getPath(currentFolder, target), content)
+        fs.writeFileSync(getPath(base, target), content)
 
         consoleLiph.log(`${consoleLiph.colorizeText('CREATED', { color: 'green' })} ${target}`)
     }

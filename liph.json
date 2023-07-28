@@ -1,5 +1,5 @@
 {
     "module": {
-        "dist": "./src/app/module"
+        "dist": "./test/templates/modules"
     }
 }

@@ -101,7 +101,7 @@ export class ModuleCommand extends Command {
             })
         }
 
-        const cliConfigPAthDistModule = getPath(process.cwd(), ...getFileCliConfig().module.dist.split(path.sep))
+        const cliConfigPAthDistModule = getPath(...getFileCliConfig().module.dist.split(path.sep))
 
         const resultGenerateTemplate = templateControl.execute(data, cliConfigPAthDistModule)
 
