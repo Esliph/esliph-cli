@@ -11,7 +11,8 @@
         "build": "tsc"
     },
     "files": [
-        "dist"
+        "dist",
+        "templates"
     ],
     "publishConfig": {
         "access": "public"
