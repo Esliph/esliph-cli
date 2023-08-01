@@ -8,11 +8,11 @@ import { {{ capitalise name }}CreateUseCase } from '@modules/{{ name }}/use-case
 
 const {{ name }}ServicesUseCase: Provider[] = [
     ...{{ capitalise name }}Dependencies,{{#if isEntity}}{{#if includeCrud}}
-        {{ capitalise name }}CreateUseCase,
-        {{ capitalise name }}ListUseCase,
-        {{ capitalise name }}UpdateUseCase,
-        {{ capitalise name }}DeleteUseCase,
-        {{ capitalise name }}FindOneUseCase{{/if}}{{/if}}
+    {{ capitalise name }}CreateUseCase,
+    {{ capitalise name }}ListUseCase,
+    {{ capitalise name }}UpdateUseCase,
+    {{ capitalise name }}DeleteUseCase,
+    {{ capitalise name }}FindOneUseCase{{/if}}{{/if}}
 ]
 
 @Global()

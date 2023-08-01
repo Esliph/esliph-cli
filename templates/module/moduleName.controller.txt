@@ -1,6 +1,8 @@
-import { Controller, Get, Post, Delete, Put, UseGuards } from '@nestjs/common'
+import { Controller, Get, Post, Delete, Put } from '@nestjs/common'
 import { Body, Res, Param } from '@nestjs/common/decorators'
+import { Application } from '@core'
 import { Response } from '@@types/http'
+import { ErrorType } from '@@types/error'
 import { {{ capitalise name }}Service } from '@modules/{{ name }}/{{ name }}.service'{{#if includeCrud}}{{#if isEntity}}
 import { {{ capitalise name }}UpdateUseCaseDTO } from '@modules/{{ name }}/use-case/update.use-case'
 import { {{ capitalise name }}DeleteUseCaseDTO } from '@modules/{{ name }}/use-case/delete.use-case'
@@ -8,11 +10,18 @@ import { {{ capitalise name }}CreateUseCaseDTO } from '@modules/{{ name }}/use-c
 
 @Controller('/{{ plural name }}')
 export class {{ capitalise name }}Controller {
-    constructor(private readonly {{ name }}Service: {{ capitalise name }}Service) { }
-{{#if includeCrud}}{{#if isEntity}}
-    @Get('/')
+    constructor(private readonly {{ name }}Service: {{ capitalise name }}Service) {}
+
+    {{#if includeCrud}}{{#if isEntity}}@Get('/')
     async get{{ capitaliseAndPlural name }}(@Res() res: Response) {
         const response = await this.{{ name }}Service.get{{ capitaliseAndPlural name }}({})
+
+        if (!response.isSuccess()) {
+            Application.emit('error', {
+                ...response.getError(),
+                type: ErrorType.HttpRequest
+            })
+        }
 
         return res.status(response.getStatus()).send(response.getResponse())
     }
@@ -21,12 +30,26 @@ export class {{ capitalise name }}Controller {
     async get{{ capitalise name }}(@Param('id') id: string, @Res() res: Response) {
         const response = await this.{{ name }}Service.get{{ capitalise name }}({ id })
 
+        if (!response.isSuccess()) {
+            Application.emit('error', {
+                ...response.getError(),
+                type: ErrorType.HttpRequest
+            })
+        }
+
         return res.status(response.getStatus()).send(response.getResponse())
     }
 
     @Post('/create')
     async create(@Body() body: {{ capitalise name }}CreateUseCaseDTO, @Res() res: Response) {
         const response = await this.{{ name }}Service.create({ ...body })
+
+        if (!response.isSuccess()) {
+            Application.emit('error', {
+                ...response.getError(),
+                type: ErrorType.HttpRequest
+            })
+        }
 
         return res.status(response.getStatus()).send(response.getResponse())
     }
@@ -35,12 +58,26 @@ export class {{ capitalise name }}Controller {
     async update(@Param('id') id: string, @Body() body: {{ capitalise name }}UpdateUseCaseDTO, @Res() res: Response) {
         const response = await this.{{ name }}Service.update({ id, ...body })
 
+        if (!response.isSuccess()) {
+            Application.emit('error', {
+                ...response.getError(),
+                type: ErrorType.HttpRequest
+            })
+        }
+
         return res.status(response.getStatus()).send(response.getResponse())
     }
 
     @Delete('/delete/:id')
     async delete(@Param('id') id: string, @Body() body: {{ capitalise name }}DeleteUseCaseDTO, @Res() res: Response) {
         const response = await this.{{ name }}Service.delete({ id, ...body })
+
+        if (!response.isSuccess()) {
+            Application.emit('error', {
+                ...response.getError(),
+                type: ErrorType.HttpRequest
+            })
+        }
 
         return res.status(response.getStatus()).send(response.getResponse())
     }{{/if}}{{/if}}

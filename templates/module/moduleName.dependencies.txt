@@ -16,8 +16,8 @@ import {
     {{ capitalise name }}FindUniqueOrThrowRepository,
     {{ capitalise name }}FindUniqueRepositoryAbstract,
     {{ capitalise name }}FindUniqueRepository
-} from '@modules/{{ name }}/repository/find.repository'
-{{/if}}{{/if}}
+} from '@modules/{{ name }}/repository/find.repository'{{/if}}{{/if}}
+
 export const {{ capitalise name }}Dependencies: Provider[] = [{{#if includeCrud}}{{#if isEntity}}
     {
         provide: {{ capitalise name }}ModelTableRepositoryAbstract,

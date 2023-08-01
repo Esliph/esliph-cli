@@ -1,5 +1,5 @@
-import { ModuleArgs } from "../../../commands/module.command.js"
-import { TemplateConfig } from "../../template.js"
+import { ModuleArgs } from '../../../commands/module.command.js'
+import { TemplateConfig } from '../../template.js'
 
 function IncludeCrud({ includeCrud }: ModuleArgs) {
     return includeCrud
@@ -26,8 +26,8 @@ export const TEMPLATE_CONFIG: TemplateConfig<ModuleArgs> = {
         'moduleName.controller.txt': {
             name: data => `${data.name}.controller.ts`
         },
-        'dependencies.txt': {
-            name: 'dependencies.ts'
+        'moduleName.dependencies.txt': {
+            name: data => `${data.name}.dependencies.ts`
         },
         'use-case.module.txt': {
             name: 'use-case.module.ts'
