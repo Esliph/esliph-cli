@@ -1,7 +1,7 @@
 {
     "name": "@esliph/cli",
     "description": "",
-    "version": "1.0.1",
+    "version": "1.0.11",
     "main": "dist/bin/liph.js",
     "type": "module",
     "scripts": {
