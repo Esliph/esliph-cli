@@ -1,10 +1,11 @@
-import { MiddlewareConsumer, Module, NestModule, Provider } from '@nestjs/common'
+import { Global, MiddlewareConsumer, Module, NestModule, Provider } from '@nestjs/common'
 import { {{ capitalise name }}Controller } from '@modules/{{ name }}/{{ name }}.controller'
 import { {{ capitalise name }}UseCaseModule } from '@modules/{{ name }}/use-case.module'
 import { {{ capitalise name }}Service } from '@modules/{{ name }}/{{ name }}.service'
 
 const {{ capitalise name }}ModuleServices: Provider[] = [{{ capitalise name }}Service]
 
+@Global()
 @Module({
     imports: [
         {{ capitalise name }}UseCaseModule

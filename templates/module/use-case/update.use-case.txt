@@ -1,21 +1,17 @@
 import { Injectable } from '@nestjs/common'
-import { HttpEsliph, Result } from '@esliph/util-node'
+import { Result } from '@esliph/util-node'
+import {} from 'class-validator'
 import { z } from 'zod'
-import { IsOptional } from 'class-validator'
+import { UseCase } from '@common/use-case'
 import { ZodValidateService } from '@services/zod'
-import { ResultException } from '@util/exceptions/result.exception'
+import { HttpStatusCodes } from '@util/http/status-code'
 import { {{ capitalise name }}EntityTable } from '@modules/{{ name }}/schema'
-import { {{ capitalise name }}PropSelect } from '@modules/{{ name }}/repository/repository'
 import { {{ capitalise name }}UpdateRepositoryAbstract } from '@modules/{{ name }}/repository/update.repository'
 import { {{ capitalise name }}FindUniqueRepositoryAbstract } from '@modules/{{ name }}/repository/find.repository'
 
-export class {{ capitalise name }}UpdateUseCaseDTO {
-    /* Set the DTO properties to update the "{{ capitalise name }}" */
-}
+export class {{ capitalise name }}UpdateUseCaseDTO {}
 
-export const {{ capitalise name }}UpdateUseCaseArgsSchema = ZodValidateService.defaultSchemaModelTable().extend({
-    /* Define the properties and their validations to update the "{{ capitalise name }}" */
-})
+export const {{ capitalise name }}UpdateUseCaseArgsSchema = ZodValidateService.defaultSchemaModelTable().extend({})
 
 export type {{ capitalise name }}UpdateUseCaseArgs = z.input<typeof {{ capitalise name }}UpdateUseCaseArgsSchema>
 export type {{ capitalise name }}UpdateUseCaseResponse = z.output<typeof {{ capitalise name }}UpdateUseCaseArgsSchema>
@@ -23,8 +19,10 @@ export type {{ capitalise name }}UpdateUseCasePerformResponseValue = { success: 
 export type {{ capitalise name }}UpdateUseCasePerformResponse = Promise<Result<{{ capitalise name }}UpdateUseCasePerformResponseValue>>
 
 @Injectable()
-export class {{ capitalise name }}UpdateUseCase {
-    constructor(private readonly update{{ capitalise name }}Repository: {{ capitalise name }}UpdateRepositoryAbstract, private readonly find{{ capitalise name }}Repository: {{ capitalise name }}FindUniqueRepositoryAbstract) { }
+export class {{ capitalise name }}UpdateUseCase extends UseCase {
+    constructor(private readonly update{{ capitalise name }}Repository: {{ capitalise name }}UpdateRepositoryAbstract, private readonly find{{ capitalise name }}Repository: {{ capitalise name }}FindUniqueRepositoryAbstract) {
+        super()
+    }
 
     async perform(updateArgs: {{ capitalise name }}UpdateUseCaseArgs): {{ capitalise name }}UpdateUseCasePerformResponse {
         try {
@@ -32,10 +30,7 @@ export class {{ capitalise name }}UpdateUseCase {
 
             return responsePerform
         } catch (err: any) {
-            if (err instanceof ResultException) {
-                return err
-            }
-            return Result.failure({ title: 'Update {{ capitalise name }}', message: [{ message: 'Cannot update {{ name }}' }] }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+            return this.extractError(err, { title: 'Update {{ capitalise name }}', message: 'Cannot update {{ name }}' })
         }
     }
 
@@ -50,15 +45,13 @@ export class {{ capitalise name }}UpdateUseCase {
 
         const {{ name }}EntityTable = new {{ capitalise name }}EntityTable({{ name }}ToBeUpdated)
 
-        {{ name }}EntityTable.update(update{{ capitalise name }}Data)
-
         const performUpdateRepositoryResult = await this.performUpdateRepository({{ name }}EntityTable)
 
         if (!performUpdateRepositoryResult.isSuccess()) {
             return Result.failure(performUpdateRepositoryResult.getError(), performUpdateRepositoryResult.getStatus())
         }
 
-        return Result.success({ success: '{{ capitalise name }} update successfully' }, HttpEsliph.HttpStatusCodes.OK)
+        return Result.success({ success: '{{ capitalise name }} update successfully' }, HttpStatusCodes.OK)
     }
 
     private async find{{ capitalise name }}ToBeUpdated(args: { id: number }) {
@@ -76,7 +69,7 @@ export class {{ capitalise name }}UpdateUseCase {
     private async performUpdateRepository({{ name }}Data: {{ capitalise name }}EntityTable) {
         const response = await this.update{{ capitalise name }}Repository.perform({
             where: { id: {{ name }}Data.id },
-            data: { ...{{ name }}Data }
+            data: {{ name }}Data
         })
 
         return response

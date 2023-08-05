@@ -8,9 +8,9 @@ import { {{ capitalise name }}CreateUseCaseDTO } from '@modules/{{ name }}/use-c
 
 @Controller('/{{ plural name }}')
 export class {{ capitalise name }}Controller {
-    constructor(private readonly {{ name }}Service: {{ capitalise name }}Service) { }
-{{#if includeCrud}}{{#if isEntity}}
-    @Get('/')
+    constructor(private readonly {{ name }}Service: {{ capitalise name }}Service) {}
+
+    {{#if includeCrud}}{{#if isEntity}}@Get('/')
     async get{{ capitaliseAndPlural name }}(@Res() res: Response) {
         const response = await this.{{ name }}Service.get{{ capitaliseAndPlural name }}({})
 

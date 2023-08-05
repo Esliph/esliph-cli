@@ -1,23 +1,10 @@
 import { Provider } from '@nestjs/common'{{#if includeCrud}}{{#if isEntity}}
-import { {{ capitalise name }}ModelTableRepositoryAbstract, {{ capitalise name }}ModelTableRepository } from '@modules/{{ name }}/repository/repository'
 import { {{ capitalise name }}CreateManyRepositoryAbstract, {{ capitalise name }}CreateManyRepository, {{ capitalise name }}CreateRepositoryAbstract, {{ capitalise name }}CreateRepository } from '@modules/{{ name }}/repository/create.repository'
-import { {{ capitalise name }}UpdateManyRepositoryAbstract, {{ capitalise name }}UpdateManyRepository, {{ capitalise name }}UpdateRepositoryAbstract, {{ capitalise name }}UpdateRepository } from '@modules/{{ name }}/repository/update.repository'
 import { {{ capitalise name }}DeleteManyRepositoryAbstract, {{ capitalise name }}DeleteManyRepository, {{ capitalise name }}DeleteRepositoryAbstract, {{ capitalise name }}DeleteRepository } from '@modules/{{ name }}/repository/delete.repository'
-import {
-    {{ capitalise name }}FindExistsRepositoryAbstract,
-    {{ capitalise name }}FindExistsRepository,
-    {{ capitalise name }}FindFirstOrThrowRepositoryAbstract,
-    {{ capitalise name }}FindFirstOrThrowRepository,
-    {{ capitalise name }}FindFirstRepositoryAbstract,
-    {{ capitalise name }}FindFirstRepository,
-    {{ capitalise name }}FindManyRepositoryAbstract,
-    {{ capitalise name }}FindManyRepository,
-    {{ capitalise name }}FindUniqueOrThrowRepositoryAbstract,
-    {{ capitalise name }}FindUniqueOrThrowRepository,
-    {{ capitalise name }}FindUniqueRepositoryAbstract,
-    {{ capitalise name }}FindUniqueRepository
-} from '@modules/{{ name }}/repository/find.repository'
-{{/if}}{{/if}}
+import { {{ capitalise name }}FindExistsRepositoryAbstract, {{ capitalise name }}FindExistsRepository, {{ capitalise name }}FindFirstOrThrowRepositoryAbstract, {{ capitalise name }}FindFirstOrThrowRepository, {{ capitalise name }}FindFirstRepositoryAbstract, {{ capitalise name }}FindFirstRepository, {{ capitalise name }}FindManyRepositoryAbstract, {{ capitalise name }}FindManyRepository, {{ capitalise name }}FindUniqueOrThrowRepositoryAbstract, {{ capitalise name }}FindUniqueOrThrowRepository, {{ capitalise name }}FindUniqueRepositoryAbstract, {{ capitalise name }}FindUniqueRepository } from '@modules/{{ name }}/repository/find.repository'
+import { {{ capitalise name }}ModelTableRepositoryAbstract, {{ capitalise name }}ModelTableRepository } from '@modules/{{ name }}/repository/repository'
+import { {{ capitalise name }}UpdateManyRepositoryAbstract, {{ capitalise name }}UpdateManyRepository, {{ capitalise name }}UpdateRepositoryAbstract, {{ capitalise name }}UpdateRepository } from '@modules/{{ name }}/repository/update.repository'{{/if}}{{/if}}
+
 export const {{ capitalise name }}Dependencies: Provider[] = [{{#if includeCrud}}{{#if isEntity}}
     {
         provide: {{ capitalise name }}ModelTableRepositoryAbstract,

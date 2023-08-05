@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { HttpEsliph, Result } from '@esliph/util-node'
+import { Result } from '@esliph/util-node'
 import { z } from 'zod'
+import { UseCase } from '@common/use-case'
 import { ZodValidateService } from '@services/zod'
-import { ResultException } from '@util/exceptions/result.exception'
 import { {{ capitalise name }}DeleteRepositoryAbstract } from '@modules/{{ name }}/repository/delete.repository'
 
-export class {{ capitalise name }}DeleteUseCaseDTO {
-    /* Set the DTO properties to delete "{{ capitalise name }}" */
-}
+export class {{ capitalise name }}DeleteUseCaseDTO {}
 
 export const {{ capitalise name }}DeleteUseCaseArgsSchema = ZodValidateService.defaultSchemaModelTable()
 
@@ -17,8 +15,10 @@ export type {{ capitalise name }}DeleteUseCasePerformResponseValue = boolean
 export type {{ capitalise name }}DeleteUseCasePerformResponse = Promise<Result<{{ capitalise name }}DeleteUseCasePerformResponseValue>>
 
 @Injectable()
-export class {{ capitalise name }}DeleteUseCase {
-    constructor(private readonly delete{{ capitalise name }}Repository: {{ capitalise name }}DeleteRepositoryAbstract) { }
+export class {{ capitalise name }}DeleteUseCase extends UseCase {
+    constructor(private readonly delete{{ capitalise name }}Repository: {{ capitalise name }}DeleteRepositoryAbstract) {
+        super()
+    }
 
     async perform(deleteArgs: {{ capitalise name }}DeleteUseCaseArgs): {{ capitalise name }}DeleteUseCasePerformResponse {
         try {
@@ -26,10 +26,7 @@ export class {{ capitalise name }}DeleteUseCase {
 
             return responsePerform
         } catch (err: any) {
-            if (err instanceof ResultException) {
-                return err
-            }
-            return Result.failure({ title: 'Delete {{ capitalise name }}', message: [{ message: 'Cannot delete {{ name }}' }] }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+            return this.extractError(err, { title: 'Delete {{ capitalise name }}', message: 'Cannot delete {{ name }}' })
         }
     }
 

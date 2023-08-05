@@ -1,11 +1,8 @@
 {{#if isEntity}}import { {{ capitalise name }} as {{ capitalise name }}ModelPrisma } from '@prisma/client'{{/if}}
-import { HashEsliph } from '@esliph/util-node'
 
 {{#if isEntity}}export type {{ capitalise name }}ModelTable = {{ capitalise name }}ModelPrisma{{/if}}
 
-export type {{ capitalise name }}ModelSimple = {
-    /* Define props of "{{ capitalise name }}" */
-}
+export type {{ capitalise name }}ModelSimple = {}
 
 {{#if isEntity}}export class {{ capitalise name }}EntityTable implements {{ capitalise name }}ModelTable {
 

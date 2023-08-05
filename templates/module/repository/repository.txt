@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import { Injectable } from '@nestjs/common'
-import { HttpEsliph, Result } from '@esliph/util-node'
-import { DatabaseService } from '@services/database'
+import { Result } from '@esliph/util-node'
+import { DatabaseModel, DatabaseService } from '@services/database'
 import { {{ capitalise name }}ModelTable } from '@modules/{{ name }}/schema'
 
 type {{ capitalise name }}GetPayloadTypes = boolean | null | undefined | { select?: Prisma.{{ capitalise name }}Select | null }
@@ -51,8 +51,8 @@ export abstract class {{ capitalise name }}ModelTableRepositoryAbstract {
 }
 
 @Injectable()
-export class {{ capitalise name }}ModelTableRepository implements {{ capitalise name }}ModelTableRepositoryAbstract {
-    constructor(private readonly repository: DatabaseService) { }
+export class {{ capitalise name }}ModelTableRepository extends DatabaseModel implements {{ capitalise name }}ModelTableRepositoryAbstract {
+    constructor(private readonly repository: DatabaseService) { super() }
 
     async create<Args extends {{ capitalise name }}CreateArgs>(args: Args) {
         try {
@@ -61,10 +61,7 @@ export class {{ capitalise name }}ModelTableRepository implements {{ capitalise 
 
             return response
         } catch (err: any) {
-            return Result.failure<{{ capitalise name }}CreateResponse>({
-                title: 'Register {{ capitalise name }}',
-                message: [{ message: 'Cannot register {{ name }}', origin: err.meta.target.join(';') }]
-            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+            return this.extractError<{{ capitalise name }}CreateResponse>(err, { title: 'Register {{ capitalise name }}', message: 'Cannot register {{ name }}' })
         }
     }
 
@@ -75,10 +72,7 @@ export class {{ capitalise name }}ModelTableRepository implements {{ capitalise 
 
             return response
         } catch (err: any) {
-            return Result.failure<{{ capitalise name }}CreateManyResponse>({
-                title: 'Register {{ capitaliseAndPlural name }}',
-                message: [{ message: 'Cannot register {{ plural name }}', origin: err.meta.target.join(';') }]
-            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+            return this.extractError<{{ capitalise name }}CreateManyResponse>(err, { title: 'Register {{ capitaliseAndPlural name }}', message: 'Cannot register {{ plural name }}' })
         }
     }
 
@@ -89,10 +83,7 @@ export class {{ capitalise name }}ModelTableRepository implements {{ capitalise 
 
             return response
         } catch (err: any) {
-            return Result.failure<{{ capitalise name }}UpdateResponse>({
-                title: 'Update {{ capitalise name }}',
-                message: [{ message: 'Cannot update {{ name }}', origin: err.meta.target.join(';') }]
-            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+            return this.extractError<{{ capitalise name }}UpdateResponse>(err, { title: 'Update {{ capitalise name }}', message: 'Cannot update {{ name }}' })
         }
     }
 
@@ -103,10 +94,7 @@ export class {{ capitalise name }}ModelTableRepository implements {{ capitalise 
 
             return response
         } catch (err: any) {
-            return Result.failure<{{ capitalise name }}UpdateManyResponse>({
-                title: 'Update {{ capitaliseAndPlural name }}',
-                message: [{ message: 'Cannot update {{ plural name }}', origin: err.meta.target.join(';') }]
-            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+            return this.extractError<{{ capitalise name }}UpdateManyResponse>(err, { title: 'Update {{ capitaliseAndPlural name }}', message: 'Cannot update {{ plural name }}' })
         }
     }
 
@@ -116,20 +104,14 @@ export class {{ capitalise name }}ModelTableRepository implements {{ capitalise 
                 .findFirst(args)
                 .then(res => {
                     if (!res) {
-                        return Result.failure<{{ capitalise name }}FindFirstResponse<Args>>({
-                            title: 'Find {{ capitalise name }}',
-                            message: [{ message: '{{ capitalise name }} not found' }]
-                        }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+                        return this.extractError<{{ capitalise name }}FindFirstResponse<Args>>(res, { title: 'Find {{ capitalise name }}', message: '{{ capitalise name }} not found' })
                     }
                     return Result.success({ {{ name }}: res })
                 }) as Result<{{ capitalise name }}FindFirstResponse<Args>>
 
             return response
         } catch (err: any) {
-            return Result.failure<{{ capitalise name }}FindFirstResponse<Args>>({
-                title: 'Find {{ capitalise name }}',
-                message: [{ message: 'Cannot find {{ name }}', origin: err.meta.target.join(';') }]
-            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+            return this.extractError<{{ capitalise name }}FindFirstResponse<Args>>(err, { title: 'Find {{ capitalise name }}', message: 'Cannot find {{ name }}' })
         }
     }
 
@@ -139,20 +121,14 @@ export class {{ capitalise name }}ModelTableRepository implements {{ capitalise 
                 .findFirst(args)
                 .then(res => {
                     if (!res) {
-                        return Result.failure<{{ capitalise name }}ExistsResponse>({
-                            title: '{{ capitalise name }} Exists',
-                            message: [{ message: '{{ capitalise name }} not found' }]
-                        }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+                        return this.extractError<{{ capitalise name }}ExistsResponse>(res, { title: '{{ capitalise name }} Exists', message: '{{ capitalise name }} not found' })
                     }
                     return Result.success<{{ capitalise name }}ExistsResponse>(true)
                 })
 
             return response
         } catch (err: any) {
-            return Result.failure<{{ capitalise name }}ExistsResponse>({
-                title: 'Find {{ capitalise name }}',
-                message: [{ message: 'Cannot find {{ name }}', origin: err.meta.target.join(';') }]
-            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+            return this.extractError<{{ capitalise name }}ExistsResponse>(err, { title: 'Find {{ capitalise name }}', message: 'Cannot find {{ name }}' })
         }
     }
 
@@ -162,20 +138,14 @@ export class {{ capitalise name }}ModelTableRepository implements {{ capitalise 
                 .findFirst(args)
                 .then(res => {
                     if (!res) {
-                        return Result.failure<{{ capitalise name }}FindUniqueResponse<Args>>({
-                            title: '{{ capitalise name }} {{ capitalise name }}',
-                            message: [{ message: '{{ capitalise name }} not found' }]
-                        }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+                        return this.extractError<{{ capitalise name }}FindUniqueResponse<Args>>(res, { title: '{{ capitalise name }} {{ capitalise name }}', message: '{{ capitalise name }} not found' })
                     }
                     return Result.success({ {{ name }}: res })
                 }) as Result<{{ capitalise name }}FindUniqueResponse<Args>>
 
             return response
         } catch (err: any) {
-            return Result.failure<{{ capitalise name }}FindUniqueResponse<Args>>({
-                title: 'Find {{ capitalise name }}',
-                message: [{ message: 'Cannot find {{ name }}', origin: err.meta.target.join(';') }]
-            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+            return this.extractError<{{ capitalise name }}FindUniqueResponse<Args>>(err, { title: '{{ capitalise name }} {{ capitalise name }}', message: '{{ capitalise name }} not found' })
         }
     }
 
@@ -187,10 +157,7 @@ export class {{ capitalise name }}ModelTableRepository implements {{ capitalise 
 
             return response
         } catch (err: any) {
-            return Result.failure<{{ capitalise name }}FindFirstOrThrowResponse<Args>>({
-                title: 'Find {{ capitalise name }}',
-                message: [{ message: 'Cannot find {{ name }}', origin: err.meta.target.join(';') }]
-            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+            return this.extractError<{{ capitalise name }}FindFirstOrThrowResponse<Args>>(err, { title: 'Find {{ capitalise name }}', message: 'Cannot find {{ name }}' })
         }
     }
 
@@ -202,10 +169,7 @@ export class {{ capitalise name }}ModelTableRepository implements {{ capitalise 
 
             return response
         } catch (err: any) {
-            return Result.failure<{{ capitalise name }}FindUniqueOrThrowResponse<Args>>({
-                title: 'Find {{ capitalise name }}',
-                message: [{ message: 'Cannot find {{ name }}', origin: err.meta.target.join(';') }]
-            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+            return this.extractError<{{ capitalise name }}FindUniqueOrThrowResponse<Args>>(err, { title: 'Find {{ capitalise name }}', message: 'Cannot find {{ name }}' })
         }
     }
 
@@ -216,10 +180,7 @@ export class {{ capitalise name }}ModelTableRepository implements {{ capitalise 
 
             return response
         } catch (err: any) {
-            return Result.failure<{{ capitalise name }}FindManyResponse<Args>>({
-                title: 'Find {{ capitaliseAndPlural name }}',
-                message: [{ message: 'Cannot find {{ plural name }}', origin: err.meta.target.join(';') }]
-            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+            return this.extractError<{{ capitalise name }}FindManyResponse<Args>>(err, { title: 'Find {{ capitaliseAndPlural name }}', message: 'Cannot find {{ plural name }}' })
         }
     }
 
@@ -230,10 +191,7 @@ export class {{ capitalise name }}ModelTableRepository implements {{ capitalise 
 
             return response
         } catch (err: any) {
-            return Result.failure<{{ capitalise name }}DeleteResponse>({
-                title: 'Remove {{ capitalise name }}',
-                message: [{ message: 'Cannot remove {{ name }}', origin: err.meta.target.join(';') }]
-            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+            return this.extractError<{{ capitalise name }}DeleteResponse>(err, { title: 'Remove {{ capitalise name }}', message: 'Cannot remove {{ name }}' })
         }
     }
 
@@ -244,10 +202,7 @@ export class {{ capitalise name }}ModelTableRepository implements {{ capitalise 
 
             return response
         } catch (err: any) {
-            return Result.failure<{{ capitalise name }}DeleteManyResponse>({
-                title: 'Remove {{ capitaliseAndPlural name }}',
-                message: [{ message: 'Cannot remove {{ plural name }}', origin: err.meta.target.join(';') }]
-            }, HttpEsliph.HttpStatusCodes.BAD_REQUEST)
+            return this.extractError<{{ capitalise name }}DeleteManyResponse>(err, { title: 'Remove {{ capitaliseAndPlural name }}', message: 'Cannot remove {{ plural name }}' })
         }
     }
 }

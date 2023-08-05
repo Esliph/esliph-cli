@@ -26,7 +26,7 @@ export const TEMPLATE_CONFIG: TemplateConfig<ModuleArgs> = {
         'moduleName.controller.txt': {
             name: data => `${data.name}.controller.ts`
         },
-        'dependencies.txt': {
+        'moduleName.dependencies.txt': {
             name: 'dependencies.ts'
         },
         'use-case.module.txt': {
