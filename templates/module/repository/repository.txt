@@ -6,7 +6,7 @@ import { {{ capitalise name }}ModelTable } from '@modules/{{ name }}/schema'
 
 type {{ capitalise name }}GetPayloadTypes = boolean | null | undefined | { select?: Prisma.{{ capitalise name }}Select | null }
 type {{ capitalise name }}GetPayload<T extends boolean | null | undefined | { select?: Prisma.{{ capitalise name }}Select | null }> = Prisma.{{ capitalise name }}GetPayload<T>
-export type {{ capitalise name }}Args = Prisma.{{ capitalise name }}Args
+export type {{ capitalise name }}DefaultArgs = Prisma.{{ capitalise name }}Args
 export type {{ capitalise name }}CreateArgs = Prisma.{{ capitalise name }}CreateArgs
 export type {{ capitalise name }}PropSelect<ArgsSelect extends {{ capitalise name }}GetPayloadTypes> = {{ capitalise name }}GetPayload<ArgsSelect>
 export type {{ capitalise name }}CreateResponse = { {{ name }}: {{ capitalise name }}ModelTable }
