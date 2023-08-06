@@ -135,7 +135,7 @@ export class {{ capitalise name }}ModelTableRepository extends DatabaseModel imp
     async findUnique<Args extends {{ capitalise name }}FindUniqueArgs>(args: Args) {
         try {
             const response: Result<{{ capitalise name }}FindUniqueResponse<Args>> = await this.repository.{{ name }}
-                .findFirst(args)
+                .findUnique(args)
                 .then(res => {
                     if (!res) {
                         return this.extractError<{{ capitalise name }}FindUniqueResponse<Args>>(res, { title: '{{ capitalise name }} {{ capitalise name }}', message: '{{ capitalise name }} not found' })
@@ -164,7 +164,7 @@ export class {{ capitalise name }}ModelTableRepository extends DatabaseModel imp
     async findUniqueOrThrow<Args extends {{ capitalise name }}FindUniqueOrThrowArgs>(args: Args) {
         try {
             const response: Result<{{ capitalise name }}FindUniqueOrThrowResponse<Args>> = await this.repository.{{ name }}
-                .findFirstOrThrow(args)
+                .findUniqueOrThrow(args)
                 .then(res => Result.success({ {{ name }}: res })) as Result<{{ capitalise name }}FindUniqueOrThrowResponse<Args>>
 
             return response
